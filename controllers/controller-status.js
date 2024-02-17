@@ -1,10 +1,9 @@
 const axios = require('axios')
-const { request } = require('express')
 const {ROOT_URL} = require('../utils/options')
 
 async function getServerStatus(req, res) {
     try {
-        const url = `${ROOT_URL}/query`
+        const url = `${ROOT_URL}/query?`
         const status = await axios.put(url, {"query" : 'up{job="node_exporter"}'})
         return res.status(200).json(status.data)
     } catch (err) {
@@ -13,6 +12,4 @@ async function getServerStatus(req, res) {
     }
 }
 
-module.exports = {
-    getServerStatus
-}
+module.exports = getServerStatus

@@ -1,4 +1,4 @@
-const serverStatus = require("./controller-status")
+const serverStatus = require('./controller-status')
 
 module.exports = {
     serverStatus
