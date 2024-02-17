@@ -5,6 +5,8 @@ function routesApi() {
     const router = express.Router()
 
     router.put("/server/status", controller.serverStatus)
+
+    return router
 }
 
 module.exports = routesApi
