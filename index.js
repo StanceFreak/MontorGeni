@@ -4,7 +4,7 @@ const {PORT} = require("./utils/options");
 const routesApi = require('./routes/routes-api');
 
 app.use(express.json())
-app.use(routesApi)
+app.use(routesApi())
 
 app.get("/", (req, res) => {
     res.status(200).send({

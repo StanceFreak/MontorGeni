@@ -4,7 +4,7 @@ const controller = require('../controllers/index')
 function routesApi() {
     const router = express.Router()
 
-    router.put("/server/status", controller.serverStatus)
+    router.get("/server/status", controller.serverStatus)
 
     return router
 }
