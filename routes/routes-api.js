@@ -6,6 +6,8 @@ function routesApi() {
 
     router.get("/server/status", controller.serverStatus)
 
+    router.get("/server/average-memory", controller.serverAvgMemory)
+
     return router
 }
 
