@@ -13,32 +13,33 @@ async function getServerAvgMemory(req, res, next) {
         const avgMemCached = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Cached_bytes{instance="localhost:9100"}[10m])'}})
         const avgMemBuffers = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Buffers_bytes{instance="localhost:9100"}[10m])'}})
         // mapping the array of objects for getting the values and add that value to the objValues Object
-        const resultTotals = avgMemTotal.data.data.result.map((data, index) => {
+        avgMemTotal.data.data.result.map((data) => {
             const calc = parseInt(data.value[1])
             objValues.memTotals = calc
         })
-        const resultFree = avgMemFree.data.data.result.map((data, index) => {
+        avgMemFree.data.data.result.map((data) => {
             const calc = parseInt(data.value[1])
             objValues.memFree = calc
         })
-        const resultCached = avgMemCached.data.data.result.map((data, index) => {
+        avgMemCached.data.data.result.map((data) => {
             const calc = parseInt(data.value[1])
             objValues.memCached = calc
         })
-        const resultBuffers = avgMemBuffers.data.data.result.map((data, index) => {
+        avgMemBuffers.data.data.result.map((data) => {
             const calc = parseInt(data.value[1])  
             objValues.memBuffers = calc
         })
         // getting the values only from the objValues Object
-        const testValues = Object.values(objValues)
+        const memValues = Object.values(objValues)
         // calculate all of the values using below formula for the average memory usage in percent
-        const avgServerMemory = 100 * (1- ((testValues[1] + testValues[2] + testValues[3]) / testValues[0]))
+        const avgServerMemory = 100 * (1- ((memValues[1] + memValues[2] + memValues[3]) / memValues[0]))
         return res.status(200).json(
             {
                 status: "success",
                 data: {
-                    resultType: "percentage",
-                    result: avgServerMemory
+                    serverMemUsage: parseInt(avgServerMemory.toFixed(2)),
+                    serverMemTotal: (memValues[0]/1000/1000),
+                    serverMemFree: memValues[1]/1000/1000
                 }
             }
         )
