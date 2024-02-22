@@ -3,28 +3,26 @@ const {ROOT_URL} = require('../utils/options')
 
 async function getServerNetworkReceive(req, res, next) {
     try {
-        let testObj = []
+        let tempApiResponse = []
+        let apiResponse = []
         const url = `${ROOT_URL}/query`
         const nwReceive = await axios.get(url, {params: {query : 'rate(node_network_receive_bytes_total[10s]) * 0.008'}})
         nwReceive.data.data.result.map((data) => {
-            // console.log(data.metric)
-            // console.log(data.value)
-            // testObj.metric = data.metric
-            testObj.push({data})
-            // testObj = {data}
-            // console.log(data.metric)
-            // data.value.map((dataTest) => {
-            //     console.log(dataTest)
-            //     // testObj.value = dataTest
-            //     // for (let i = 0; i < dataTest.length; i++) {
-            //     //     testObj.value = dataTest[i]
-            //     // }
-            // })
-            // testObj.value = 
+            tempApiResponse.push({data})
         })
-        // const objValues = Object.values(testObj)
-        console.log(testObj[0].data.metric.device)
-        return res.status(200).json(testObj)
+        for(item in tempApiResponse) {
+            const unixTime = new Date(tempApiResponse[item].data.value[0] * 1000)
+            apiResponse.push({
+                device: tempApiResponse[item].data.metric.device,
+                value: parseFloat(tempApiResponse[item].data.value[1]),
+                date: unixTime.toLocaleString()
+            })
+        }
+        return res.status(200).json({
+            status: 200,
+            message: "success",
+            data: apiResponse
+        })
     } catch (err) {
         res.status(400)
         next(Error(err.message))
