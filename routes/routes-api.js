@@ -14,6 +14,10 @@ function routesApi() {
 
     router.get("/server/network-io/transmit", controller.getServerNetworkReceive)
 
+    router.get("/server/disk-util/read", controller.getServerDiskRead)
+
+    router.get("/server/disk-util/write", controller.getServerDiskWrite)
+
     return router
 }
 
