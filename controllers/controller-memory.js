@@ -38,8 +38,8 @@ async function getServerAvgMemory(req, res, next) {
                 status: "success",
                 data: {
                     serverMemUsage: parseInt(avgServerMemory.toFixed(2)),
-                    serverMemTotal: (memValues[0]/1000/1000),
-                    serverMemFree: memValues[1]/1000/1000
+                    serverMemTotal: (memValues[0]/1024/1024),
+                    serverMemFree: memValues[1]/1024/1024
                 }
             }
         )
