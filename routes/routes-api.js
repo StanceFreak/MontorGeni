@@ -10,9 +10,9 @@ function routesApi() {
 
     router.get("/server/cpu-util", controller.serverCpuUtil)
 
-    router.get("/server/network-io/receive", controller.getServerNetworkReceive)
+    router.get("/server/network-util/receive", controller.getServerNetworkReceive)
 
-    router.get("/server/network-io/transmit", controller.getServerNetworkReceive)
+    router.get("/server/network-util/transmit", controller.getServerNetworkReceive)
 
     router.get("/server/disk-util/read", controller.getServerDiskRead)
 
