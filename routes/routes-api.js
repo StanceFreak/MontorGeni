@@ -4,7 +4,9 @@ const controller = require('../controllers/index')
 function routesApi() {
     const router = express.Router()
 
-    router.get("/server/status", controller.serverStatus)
+    router.get("/server/status", controller.getServerStatus)
+
+    router.get("/server/tes", controller.testExec)
 
     router.get("/server/average-memory", controller.serverAvgMemory)
 
