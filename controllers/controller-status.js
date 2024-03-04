@@ -1,23 +1,22 @@
+const util = require('util')
 const axios = require('axios')
 const {ROOT_URL} = require('../utils/options')
+const exec = util.promisify(require('child_process').exec)
 
 async function getServerStatus(req, res, next) {
     try {
         const objResponse = {}
         const url = `${ROOT_URL}/query`
         const status = await axios.get(url, {params: {query : 'up{job="node_exporter"}'}})
-        const serverUptime = await axios.get(url, {params: {query : 'node_time_seconds - node_boot_time_seconds'}})
+        const {stdout, stderr} = await exec('uptime -p')
         status.data.data.result.map((data) => {
             objResponse.serverStatus = data.value[1]
         })
-        serverUptime.data.data.result.map((data) => {
-            const uptimeSeconds = parseInt(data.value[1])
-            const hours = Math.floor(uptimeSeconds/3600)
-            const minutes = Math.floor((uptimeSeconds%3600)/60)
-            const seconds = Math.floor(uptimeSeconds%60)
-            const timeString = hours.toString().padStart(2, '0') + ' hours, ' + minutes.toString().padStart(2, '0') + ' minutes, ' + seconds.toString().padStart(2, '0') + ' seconds'
-            objResponse.serverUptime = timeString
-        })
+        if (stderr) {
+            console.log('stderr:', stderr)
+        } else {
+            objResponse.serverUptime = stdout.slice(3, -1)
+        }
         const responseValues = Object.values(objResponse)
         return res.status(200).json({
             status: 200,
@@ -33,4 +32,21 @@ async function getServerStatus(req, res, next) {
     }
 }
 
-module.exports = getServerStatus
+async function testExec(req, res, next) {
+    try {
+        const {stdout, stderr} = await exec('echo "matatabi" | sudo -S systemctl stop prometheus')
+        if (stderr) {
+            console.log('stderr:', stderr)
+        } else {
+            console.log("Success stopping prometheus")
+        }
+    } catch (error) {
+        res.status(400)
+        next(Error(error.message))
+    }
+}
+
+module.exports = {
+    getServerStatus,
+    testExec
+}
