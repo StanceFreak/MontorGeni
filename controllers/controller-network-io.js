@@ -15,7 +15,7 @@ async function getServerNetworkReceive(req, res, next) {
             apiResponse.push({
                 device: tempApiResponse[item].data.metric.device,
                 value: parseFloat(tempApiResponse[item].data.value[1]),
-                date: unixTime.toLocaleString()
+                time: unixTime.toLocaleTimeString()
             })
         }
         return res.status(200).json({
@@ -43,7 +43,7 @@ async function getServerNetworkTransmit(req, res, next) {
             apiResponse.push({
                 device: tempApiResponse[item].data.metric.device,
                 value: parseFloat(tempApiResponse[item].data.value[1]),
-                date: unixTime.toLocaleString()
+                time: unixTime.toLocaleTimeString()
             })
         }
         return res.status(200).json({

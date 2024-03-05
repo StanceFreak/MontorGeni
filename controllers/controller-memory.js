@@ -27,7 +27,9 @@ async function getServerAvgMemory(req, res, next) {
         })
         avgMemBuffers.data.data.result.map((data) => {
             const calc = parseInt(data.value[1])  
+            const unixTime = new Date(data.value[0] * 1000)
             objValues.memBuffers = calc
+            objValues.date = unixTime.toLocaleTimeString()
         })
         // getting the values only from the objValues Object
         const memValues = Object.values(objValues)
@@ -35,11 +37,13 @@ async function getServerAvgMemory(req, res, next) {
         const avgServerMemory = 100 * (1- ((memValues[1] + memValues[2] + memValues[3]) / memValues[0]))
         return res.status(200).json(
             {
-                status: "success",
+                status: 200,
+                message: "success",
                 data: {
                     serverMemUsage: parseInt(avgServerMemory.toFixed(2)),
                     serverMemTotal: (memValues[0]/1024/1024),
-                    serverMemFree: memValues[1]/1024/1024
+                    serverMemFree: memValues[1]/1024/1024,
+                    time: memValues[4]
                 }
             }
         )
