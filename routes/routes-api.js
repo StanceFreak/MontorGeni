@@ -12,13 +12,17 @@ function routesApi() {
 
     router.get("/server/cpu-util", controller.serverCpuUtil)
 
-    router.get("/server/network-util/receive", controller.getServerNetworkReceive)
+    router.get("/server/network/util/receive", controller.getServerNetworkReceive)
 
-    router.get("/server/network-util/transmit", controller.getServerNetworkReceive)
+    router.get("/server/network/util/transmit", controller.getServerNetworkReceive)
 
     router.get("/server/disk-util/read", controller.getServerDiskRead)
 
     router.get("/server/disk-util/write", controller.getServerDiskWrite)
+
+    router.get("/server/network/performance/packet-loss", controller.getNetworkPacketLoss)
+
+    router.get("/server/network/performance/latency", controller.getNetworkLatency)
 
     return router
 }
