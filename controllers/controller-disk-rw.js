@@ -15,7 +15,7 @@ async function getServerDiskRead(req, res, next) {
             apiResponse.push({
                 device: tempApiResponse[item].data.metric.device,
                 value: parseFloat(tempApiResponse[item].data.value[1]),
-                date: unixTime.toLocaleString()
+                date: unixTime.toLocaleTimeString()
             })
         }
         return res.status(200).json({
@@ -43,7 +43,7 @@ async function getServerDiskWrite(req, res, next) {
             apiResponse.push({
                 device: tempApiResponse[item].data.metric.device,
                 value: parseFloat(tempApiResponse[item].data.value[1]),
-                date: unixTime.toLocaleString()
+                date: unixTime.toLocaleTimeString()
             })
         }
         return res.status(200).json({
