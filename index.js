@@ -2,6 +2,13 @@ const express = require('express');
 const app = express();
 const {PORT} = require("./utils/options");
 const routesApi = require('./routes/routes-api');
+const scrapers = require('./scrapers/scrapers-api')
+
+let d = new Date()
+let epoch = d.getTime() / 1000
+
+let secLastTrigger = epoch % 60
+let secNextTrigger = 60 - secLastTrigger
 
 app.use(express.json())
 app.use(routesApi())
@@ -29,3 +36,8 @@ app.use((error, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`)
 })
+
+setTimeout(() => {
+    setInterval(scrapers, 60*1000)
+    scrapers
+}, secNextTrigger*1000);
