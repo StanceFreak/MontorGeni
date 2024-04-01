@@ -32,13 +32,41 @@ async function getServerStatus(req, res, next) {
     }
 }
 
-async function testExec(req, res, next) {
+async function execCommand(req, res, next) {
     try {
-        const {stdout, stderr} = await exec('echo "matatabi" | sudo -S systemctl stop prometheus')
-        if (stderr) {
-            console.log('stderr:', stderr)
-        } else {
-            console.log("Success stopping prometheus")
+        const {stdout, stderr} = await exec(`echo "matatabi" | sudo -S systemctl ${req.body.command} prometheus`)
+        if(req.body.command == "stop") {
+            if (stderr) {
+                console.log('error:', stderr)
+            } else {
+                res.status(200).json(
+                    {
+                        status: 200,
+                        message: "Success",
+                        data: {
+                            result: "Server inactive"
+                        }
+                    }
+                )
+            }
+        }
+        else if (req.body.command == "restart") {
+            if (stderr) {
+                console.log('error:', stderr)
+            } else {
+                res.status(200).json(
+                    {
+                        status: 200,
+                        message: "Success",
+                        data: {
+                            result: "Server restarted"
+                        }
+                    }
+                )
+            }
+        }
+        else {
+            console.log("Command not found")
         }
     } catch (error) {
         res.status(400)
@@ -48,5 +76,5 @@ async function testExec(req, res, next) {
 
 module.exports = {
     getServerStatus,
-    testExec
+    execCommand
 }
