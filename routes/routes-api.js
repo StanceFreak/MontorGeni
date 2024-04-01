@@ -6,7 +6,7 @@ function routesApi() {
 
     router.get("/server/status", controller.getServerStatus)
 
-    router.get("/server/tes", controller.testExec)
+    router.get("/server/execCommand", controller.execCommand)
 
     router.get("/server/average-memory", controller.serverAvgMemory)
 

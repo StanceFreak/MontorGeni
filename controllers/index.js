@@ -1,4 +1,4 @@
-const {getServerStatus, testExec} = require("./controller-status")
+const {getServerStatus, execCommand} = require("./controller-status")
 const serverAvgMemory = require("./controller-memory")
 const serverCpuUtil = require("./controller-cpu-util")
 const {getServerNetworkReceive, getServerNetworkTransmit} = require("./controller-network-io")
@@ -7,7 +7,7 @@ const {getNetworkPacketLoss, getNetworkLatency} = require("./controller-network-
 
 module.exports = {
     getServerStatus,
-    testExec,
+    execCommand,
     serverAvgMemory,
     serverCpuUtil,
     getServerNetworkReceive,
