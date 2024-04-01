@@ -1,16 +1,19 @@
 const axios = require('axios')
 const {ROOT_URL} = require('../utils/options')
+const db = require('../utils/config-db')
+const mysql = require('mysql')
+const pool = mysql.createPool(db)
 
 async function getNetworkPacketLoss(req, res, next) {
     try {
         const url = `${ROOT_URL}/query`
         const objValues = {}
-        const serverPacketLoss = await axios.get(url, {params: {query: '((smokeping_requests_total - smokeping_response_duration_seconds_count) / smokeping_requests_total) * 100'}})
+        const serverPacketLoss = await axios.get(url, {params: {query: '100 - (increase(smokeping_response_duration_seconds_count[1m]) / increase(smokeping_requests_total[1m]) * 100)'}})
         serverPacketLoss.data.data.result.map((data) => {
             const pl = parseFloat(data.value[1]).toFixed(1)
             const unixTime = new Date(data.value[0] * 1000)
             objValues.value = pl
-            objValues.time = unixTime.toLocaleTimeString()
+            objValues.time = unixTime.toLocaleTimeString('en-GB')
         })
         const plValues = Object.values(objValues)
         return res.status(200).json({
@@ -29,26 +32,26 @@ async function getNetworkPacketLoss(req, res, next) {
 
 async function getNetworkLatency(req, res, next) {
     try {
-        const url = `${ROOT_URL}/query`
-        const objValues = {}
-        const serverLatency = await axios.get(url, {params: {query: 'sum(rate(smokeping_response_duration_seconds_bucket{instance="localhost:9374", le="0.512"}[1m]))'}})
-        serverLatency.data.data.result.map((data) => {
-            const latency = parseFloat(data.value[1]).toFixed(1)
-            const unixTime = new Date(data.value[0] * 1000)
-            objValues.value = latency
-            objValues.date = unixTime.toLocaleTimeString()
-        })
-        const latencyValues = Object.values(objValues)
-        return res.status(200).json({
-            status: 200,
-            message: "success",
-            data: {
-                latency: latencyValues[0],
-                time: latencyValues[1]
-            }
+        pool.getConnection(function (err, conn) {
+            if (err) throw err
+            conn.query(
+                `SELECT * FROM net_latency WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${req.body.interval})`,
+                function (error, results) {
+                    if (error) throw error
+                    res.status(200).json(
+                        {
+                            status: 200,
+                            message: "success",
+                            data: results
+                        }
+                    )
+                }
+            )
+            conn.release()
         })
     } catch (error) {
-        
+        res.status(400)
+        next(Error(err.message))
     }
 }
 
