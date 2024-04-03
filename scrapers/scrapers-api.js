@@ -12,7 +12,7 @@ async function storeCpuUtils(req, res, next) {
     try {
         const objValues = {}
         const url = `${ROOT_URL}/query`
-        const cpuUtil = await axios.get(url, {params: {query: '100 - (avg by (instance) (rate(node_cpu_seconds_total{job="node_exporter",mode="idle"}[1m])) * 100)'}})
+        const cpuUtil = await axios.get(url, {params: {query: '100 - (avg by (instance) (rate(node_cpu_seconds_total{job="node-exporter", mode="idle"}[1m])) * 100)'}})
         cpuUtil.data.data.result.map((data) => {
             const unixTime = new Date(data.value[0] * 1000)
             objValues.value = data.value[1]
@@ -107,7 +107,7 @@ async function storeNetLatency(req, res, next) {
     try {
         const url = `${ROOT_URL}/query`
         const objValues = {}
-        const serverLatency = await axios.get(url, {params: {query: 'sum(probe_icmp_duration_seconds{phase="rtt", instance="10.33.109.200"}) * 1000'}})
+        const serverLatency = await axios.get(url, {params: {query: 'sum(probe_icmp_duration_seconds{phase="rtt", instance="8.8.8.8"}) * 1000'}})
         serverLatency.data.data.result.map((data) => {
             const latency = parseFloat(data.value[1]).toFixed(1)
             const unixTime = new Date(data.value[0] * 1000)
