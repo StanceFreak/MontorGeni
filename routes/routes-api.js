@@ -6,15 +6,13 @@ function routesApi() {
 
     router.get("/server/status", controller.getServerStatus)
 
-    router.get("/server/execCommand", controller.execCommand)
+    router.post("/server/change-status", controller.postServerStatus)
 
     router.get("/server/average-memory", controller.serverAvgMemory)
 
     router.get("/server/cpu-util", controller.serverCpuUtil)
 
-    router.get("/server/network/util/receive", controller.getServerNetworkReceive)
-
-    router.get("/server/network/util/transmit", controller.getServerNetworkReceive)
+    router.get("/server/network-io", controller.getServerNetworkIo)
 
     router.get("/server/disk-util/read", controller.getServerDiskRead)
 
