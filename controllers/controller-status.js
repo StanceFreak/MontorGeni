@@ -1,30 +1,26 @@
-const util = require('util')
-const axios = require('axios')
-const {ROOT_URL} = require('../utils/options')
-const exec = util.promisify(require('child_process').exec)
+const {NodeSSH} = require('node-ssh')
+const ssh = new NodeSSH()
+const config = require('../utils/config-ssh')
 
 async function getServerStatus(req, res, next) {
     try {
         const objResponse = {}
-        const url = `${ROOT_URL}/query`
-        const status = await axios.get(url, {params: {query : 'up{job="node_exporter"}'}})
-        const {stdout, stderr} = await exec('uptime -p')
-        status.data.data.result.map((data) => {
-            objResponse.serverStatus = data.value[1]
-        })
-        if (stderr) {
-            console.log('stderr:', stderr)
-        } else {
-            objResponse.serverUptime = stdout.slice(3, -1)
-        }
-        const responseValues = Object.values(objResponse)
-        return res.status(200).json({
-            status: 200,
-            message: "success",
-            data: {
-                status: responseValues[0],
-                uptime: responseValues[1]
-            }
+        ssh.connect(config).then(function() {
+            ssh.execCommand("uptime -p").then(function(result) {
+                if (result.stderr) {
+                    console.log('stderr:', result.stderr)
+                } else {
+                    objResponse.serverUptime = result.stdout.slice(3, -1)
+                    const responseValues = Object.values(objResponse)
+                    return res.status(200).json({
+                        status: 200,
+                        message: "success",
+                        data: {
+                            uptime: responseValues[0]
+                        }
+                    })
+                }
+            })
         })
     } catch (err) {
         res.status(400)
@@ -32,42 +28,35 @@ async function getServerStatus(req, res, next) {
     }
 }
 
-async function execCommand(req, res, next) {
+async function postServerStatus(req, res, next) {
     try {
-        const {stdout, stderr} = await exec(`echo "matatabi" | sudo -S systemctl ${req.body.command} prometheus`)
-        if(req.body.command == "stop") {
-            if (stderr) {
-                console.log('error:', stderr)
-            } else {
-                res.status(200).json(
-                    {
+        await ssh.connect(config).then(function() {
+            ssh.execCommand(`echo "ubuntu" | sudo -S systemctl ${req.body.command} prometheus`, [], {stdin: 'ubuntu\n', pty: true}).then(function(result) {
+                if(req.body.command == "stop") {
+                    res.status(200).json({
                         status: 200,
                         message: "Success",
                         data: {
                             result: "Server inactive"
                         }
-                    }
-                )
-            }
-        }
-        else if (req.body.command == "restart") {
-            if (stderr) {
-                console.log('error:', stderr)
-            } else {
-                res.status(200).json(
-                    {
-                        status: 200,
-                        message: "Success",
-                        data: {
-                            result: "Server restarted"
+                    })
+                }
+                else if (req.body.command == "restart") {
+                    res.status(200).json(
+                        {
+                            status: 200,
+                            message: "Success",
+                            data: {
+                                result: "Server restarted"
+                            }
                         }
-                    }
-                )
-            }
-        }
-        else {
-            console.log("Command not found")
-        }
+                    )
+                }
+                else {
+                    console.log("Command not found")
+                }
+            })
+        })
     } catch (error) {
         res.status(400)
         next(Error(error.message))
@@ -76,5 +65,5 @@ async function execCommand(req, res, next) {
 
 module.exports = {
     getServerStatus,
-    execCommand
+    postServerStatus
 }
