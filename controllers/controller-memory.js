@@ -29,7 +29,7 @@ async function getServerAvgMemory(req, res, next) {
             const calc = parseInt(data.value[1])  
             const unixTime = new Date(data.value[0] * 1000)
             objValues.memBuffers = calc
-            objValues.date = unixTime.toLocaleTimeString()
+            objValues.date = unixTime.toLocaleTimeString('en-GB')
         })
         // getting the values only from the objValues Object
         const memValues = Object.values(objValues)
