@@ -1,23 +1,27 @@
 const {NodeSSH} = require('node-ssh')
 const ssh = new NodeSSH()
 const config = require('../utils/config-ssh')
+const axios = require('axios')
+const {ROOT_URL} = require('../utils/options')
 
 async function getServerStatus(req, res, next) {
     try {
+        const url = `${ROOT_URL}/query`
+        const status = await axios.get(url, {params: {query: 'up{job="prometheus"}'}})
         const objResponse = {}
-        ssh.connect(config).then(function() {
+        status.data.data.result.map((data) => {
+            objResponse.up = data.value[1]
+        })
+        await ssh.connect(config).then(function() {
             ssh.execCommand("uptime -p").then(function(result) {
                 if (result.stderr) {
                     console.log('stderr:', result.stderr)
                 } else {
                     objResponse.serverUptime = result.stdout.slice(3, -1)
-                    const responseValues = Object.values(objResponse)
                     return res.status(200).json({
                         status: 200,
                         message: "success",
-                        data: {
-                            uptime: responseValues[0]
-                        }
+                        data: objResponse
                     })
                 }
             })
