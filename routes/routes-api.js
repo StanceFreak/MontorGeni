@@ -10,13 +10,13 @@ function routesApi() {
 
     router.get("/server/average-memory", controller.serverAvgMemory)
 
-    router.get("/server/cpu-util", controller.serverCpuUtil)
+    router.get("/server/cpu-util/record", controller.getServerCpuUtilRecord)
 
-    router.get("/server/network-io", controller.getServerNetworkIo)
+    router.get("/server/cpu-util", controller.getServerCpuUtil)
 
-    router.get("/server/disk-util/read", controller.getServerDiskRead)
+    router.get("/server/network-util", controller.getServerNetworkIo)
 
-    router.get("/server/disk-util/write", controller.getServerDiskWrite)
+    router.get("/server/disk-util", controller.getServerDiskRw)
 
     router.get("/server/network/performance/packet-loss", controller.getNetworkPacketLoss)
 
