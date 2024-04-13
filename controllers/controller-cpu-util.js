@@ -48,7 +48,7 @@ async function getServerCpuUtil(req, res, next) {
         })
         const cpuValues = Object.values(objValues)
         let cpuData = {
-            value: cpuValues[0],
+            value: parseInt(cpuValues[0]),
             time: cpuValues[1]
         }
         return res.status(200).json({
