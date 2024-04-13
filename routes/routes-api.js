@@ -16,7 +16,11 @@ function routesApi() {
 
     router.get("/server/network-util", controller.getServerNetworkIo)
 
-    router.get("/server/disk-util", controller.getServerDiskRw)
+    router.get("/server/network-util/total", controller.getServerNetworkRt)
+
+    router.get("/server/disk-util", controller.getServerDiskUtil)
+
+    router.get("/server/disk-util/total", controller.getServerDiskRw)
 
     router.get("/server/network/performance/packet-loss", controller.getNetworkPacketLoss)
 
