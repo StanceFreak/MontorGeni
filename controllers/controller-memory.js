@@ -8,27 +8,32 @@ async function getServerAvgMemory(req, res, next) {
         // create new object for storing the object values from api response
         const objValues = {}
         // http request using axios library with query params for the api calls to prometheus api
-        const avgMemTotal = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemTotal_bytes{instance="localhost:9100"}[10m])'}})
-        const avgMemFree = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemFree_bytes{instance="localhost:9100"}[10m])'}})
-        const avgMemCached = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Cached_bytes{instance="localhost:9100"}[10m])'}})
-        const avgMemBuffers = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Buffers_bytes{instance="localhost:9100"}[10m])'}})
+        const avgMemTotal = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemTotal_bytes[1m]) / 1073741824'}})
+        const avgMemFree = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemFree_bytes[1m]) / 1073741824'}})
+        const avgMemCached = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Cached_bytes[1m]) / 1073741824'}})
+        const avgMemBuffers = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Buffers_bytes[1m]) / 1073741824'}})
+        const memAvailable = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemAvailable_bytes[1m]) / 1073741824'}})
         // mapping the array of objects for getting the values and add that value to the objValues Object
         avgMemTotal.data.data.result.map((data) => {
-            const calc = parseInt(data.value[1])
+            const calc = parseFloat(data.value[1])
             objValues.memTotals = calc
         })
         avgMemFree.data.data.result.map((data) => {
-            const calc = parseInt(data.value[1])
+            const calc = parseFloat(data.value[1])
             objValues.memFree = calc
         })
         avgMemCached.data.data.result.map((data) => {
-            const calc = parseInt(data.value[1])
+            const calc = parseFloat(data.value[1])
             objValues.memCached = calc
         })
         avgMemBuffers.data.data.result.map((data) => {
-            const calc = parseInt(data.value[1])  
-            const unixTime = new Date(data.value[0] * 1000)
+            const calc = parseFloat(data.value[1])
             objValues.memBuffers = calc
+        })
+        memAvailable.data.data.result.map((data) => {
+            const unixTime = new Date(data.value[0] * 1000)
+            const calc = parseFloat(data.value[1])
+            objValues.memAvailable = calc
             objValues.date = unixTime.toLocaleTimeString('en-GB')
         })
         // getting the values only from the objValues Object
@@ -40,10 +45,10 @@ async function getServerAvgMemory(req, res, next) {
                 status: 200,
                 message: "success",
                 data: {
-                    serverMemUsage: parseInt(avgServerMemory.toFixed(2)),
-                    serverMemTotal: (memValues[0]/1024/1024),
-                    serverMemFree: memValues[1]/1024/1024,
-                    time: memValues[4]
+                    memoryUsage: parseInt(avgServerMemory.toFixed(2)),
+                    memoryTotal: memValues[0].toFixed(1),
+                    memoryAvailable: memValues[4].toFixed(1),
+                    time: memValues[5]
                 }
             }
         )
