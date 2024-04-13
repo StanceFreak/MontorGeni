@@ -17,7 +17,7 @@ async function getServerStatus(req, res, next) {
                 if (result.stderr) {
                     console.log('stderr:', result.stderr)
                 } else {
-                    objResponse.serverUptime = result.stdout.slice(3, -1)
+                    objResponse.serverUptime = result.stdout.replace("up ", "")
                     return res.status(200).json({
                         status: 200,
                         message: "success",
