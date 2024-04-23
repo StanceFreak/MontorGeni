@@ -46,7 +46,7 @@ else if (hours >= 9 && hours <= 13) {
     schedule.scheduleJob('*/01 9-13 * * 1-6',scrapers.storeMemUtils)
     schedule.scheduleJob('*/01 9-13 * * 1-6',scrapers.storeNetLatency)
 } 
-else if (hours >= 14 && hours >= 23) {
+else if (hours >= 14 && hours <= 23) {
     schedule.scheduleJob('*/05 14-23 * * 1-6',scrapers.storeCpuUtils)
     schedule.scheduleJob('*/05 14-23 * * 1-6',scrapers.storeMemUtils)
     schedule.scheduleJob('*/05 14-23 * * 1-6',scrapers.storeNetLatency)
