@@ -6,23 +6,34 @@ async function getServerDiskUtil(req, res, next) {
         let tempApiResponse = []
         let apiResponse = []
         const url = `${ROOT_URL}/query`
-        const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~".*sda.*"}[2m])/1048576 or rate(otel_system_disk_io_bytes_total{device="sr0"}[2m])/1048576'}})
+        const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~"sda"}[2m])/1024 or rate(otel_system_disk_io_bytes_total{device="sr0"}[2m])/1024'}})
+        // get all sda and sr0 related drives
+        // const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~".*sda.*"}[2m])/1024 or rate(otel_system_disk_io_bytes_total{device="sr0"}[2m])/1024'}})
         diskRw.data.data.result.map((data) => {
             tempApiResponse.push({data})
         })
+        let mergeObj = []
         for(item in tempApiResponse) {
             const unixTime = new Date(tempApiResponse[item].data.value[0]*1000)
             apiResponse.push({
-                device: tempApiResponse[item].data.metric.device,
-                direction: tempApiResponse[item].data.metric.direction,
-                value: parseFloat(tempApiResponse[item].data.value[1]),
+                name: tempApiResponse[item].data.metric.device,
+                utils: [{
+                    direction: tempApiResponse[item].data.metric.direction,
+                    value: parseFloat(tempApiResponse[item].data.value[1]),
+                    packets: 0.0
+                }],
                 time: unixTime.toLocaleTimeString('en-GB')
             })
         }
+        mergeObj = apiResponse.reduce((obj, item) => {
+            obj[item.name] ? obj[item.name].utils.push(...item.utils) : (obj[item.name] = { ...item })
+            return obj
+        }, {})
+        const finalObj = Object.values(mergeObj)
         return res.status(200).json({
             status: 200,
             message: "success",
-            data: apiResponse
+            data: finalObj
         })
     } catch (error) {
         res.status(400)

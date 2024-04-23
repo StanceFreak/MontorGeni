@@ -30,12 +30,12 @@ async function getNetworkPacketLoss(req, res, next) {
     }
 }
 
-async function getNetworkLatency(req, res, next) {
+async function getNetworkLatencyRecord(req, res, next) {
     try {
         pool.getConnection(function (err, conn) {
             if (err) throw err
             conn.query(
-                `SELECT * FROM net_latency WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${req.body.interval})`,
+                `SELECT * FROM net_latency WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${req.query.interval})`,
                 function (error, results) {
                     if (error) throw error
                     res.status(200).json(
@@ -57,5 +57,5 @@ async function getNetworkLatency(req, res, next) {
 
 module.exports = {
     getNetworkPacketLoss,
-    getNetworkLatency
+    getNetworkLatencyRecord
 }

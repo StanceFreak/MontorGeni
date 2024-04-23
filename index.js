@@ -3,6 +3,7 @@ const app = express();
 const {PORT} = require("./utils/options");
 const routesApi = require('./routes/routes-api');
 const scrapers = require('./scrapers/scrapers-api');
+const schedule = require('node-schedule');
 
 app.use(express.json())
 app.use(routesApi())
@@ -29,6 +30,13 @@ app.use((error, req, res, next) => {
 
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`)
+})
+
+// need testing
+schedule.scheduleJob('*/01 * * * 1-6', function () {
+    scrapers.storeCpuUtils,
+    scrapers.storeMemUtils,
+    scrapers.storeNetLatency
 })
 
 scrapeInterval(scrapers.storeCpuUtils, 60)

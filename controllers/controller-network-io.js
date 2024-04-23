@@ -23,7 +23,7 @@ async function getServerNetworkIo(req, res, next) {
         for(item in networkUtilResponse) {
             const unixTime = new Date(networkUtilResponse[item].util.value[0] * 1000)
             apiResponse.push({
-                device: networkUtilResponse[item].util.metric.device,
+                name: networkUtilResponse[item].util.metric.device,
                 utils: [{
                     direction: networkUtilResponse[item].util.metric.direction,
                     value: parseFloat(networkUtilResponse[item].util.value[1]).toFixed(1),
@@ -33,11 +33,10 @@ async function getServerNetworkIo(req, res, next) {
             })
         }
         mergeObj = apiResponse.reduce((obj, item) => {
-            obj[item.device] ? obj[item.device].utils.push(...item.utils) : (obj[item.device] = { ...item })
+            obj[item.name] ? obj[item.name].utils.push(...item.utils) : (obj[item.name] = { ...item })
             return obj
         }, {})
         const finalObj = Object.values(mergeObj)
-        console.log(finalObj)
         return res.status(200).json({
             status: 200,
             message: "success",

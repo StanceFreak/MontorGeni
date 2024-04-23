@@ -8,9 +8,13 @@ function routesApi() {
 
     router.post("/server/change-status", controller.postServerStatus)
 
-    router.get("/server/average-memory", controller.serverAvgMemory)
+    router.get("/server/average-memory", controller.getServerAvgMemory)
 
-    router.get("/server/cpu-util/record", controller.getServerCpuUtilRecord)
+    router.get("/server/cpu-util/record?:interval", controller.getServerCpuUtilRecord)
+
+    router.get("/server/memory-util/record?:interval", controller.getServerMemUtilRecord)
+
+    router.get("/server/net-latency/record?:interval", controller.getNetworkLatencyRecord)
 
     router.get("/server/cpu-util", controller.getServerCpuUtil)
 
@@ -23,8 +27,6 @@ function routesApi() {
     router.get("/server/disk-util/total", controller.getServerDiskRw)
 
     router.get("/server/network/performance/packet-loss", controller.getNetworkPacketLoss)
-
-    router.get("/server/network/performance/latency", controller.getNetworkLatency)
 
     return router
 }

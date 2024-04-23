@@ -14,7 +14,7 @@ async function getServerCpuUtilRecord(req, res, next) {
             if (err) throw err
             conn.query(
                 // get data from db with interval of hours, minutes, seconds
-                `SELECT * FROM cpu_util WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${req.body.interval})`,
+                `SELECT * FROM cpu_util WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${req.query.interval})`,
                 // get data from db with interval of days
                 // `SELECT * FROM cpu_util WHERE created_at BETWEEN CURDATE() - INTERVAL 2 DAY AND CURDATE() - INTERVAL 1 SECOND`,
                 function (error, results) {
