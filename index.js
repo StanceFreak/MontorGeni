@@ -34,22 +34,21 @@ app.listen(PORT, () => {
 
 const currentTime = new Date()
 const hours = currentTime.getHours().toString()
-console.log(hours >= 0 && hours <= 8)
-// need testing
+// need futher testing such as 12 hour, 1 day, etc
 if (hours >= 0 && hours <= 8) {
-    schedule.scheduleJob('*/05 0-8 * * 1-6',scrapers.storeCpuUtils)
-    schedule.scheduleJob('*/05 0-8 * * 1-6',scrapers.storeMemUtils)
-    schedule.scheduleJob('*/05 0-8 * * 1-6',scrapers.storeNetLatency)
+    schedule.scheduleJob('*/02 0-8 * * 0-6',scrapers.storeCpuUtils)
+    schedule.scheduleJob('*/02 0-8 * * 0-6',scrapers.storeMemUtils)
+    schedule.scheduleJob('*/02 0-8 * * 0-6',scrapers.storeNetLatency)
 }
 else if (hours >= 9 && hours <= 13) {
-    schedule.scheduleJob('*/01 9-13 * * 1-6',scrapers.storeCpuUtils)
-    schedule.scheduleJob('*/01 9-13 * * 1-6',scrapers.storeMemUtils)
-    schedule.scheduleJob('*/01 9-13 * * 1-6',scrapers.storeNetLatency)
+    schedule.scheduleJob('*/01 9-13 * * 0-6',scrapers.storeCpuUtils)
+    schedule.scheduleJob('*/01 9-13 * * 0-6',scrapers.storeMemUtils)
+    schedule.scheduleJob('*/01 9-13 * * 0-6',scrapers.storeNetLatency)
 } 
 else if (hours >= 14 && hours <= 23) {
-    schedule.scheduleJob('*/05 14-23 * * 1-6',scrapers.storeCpuUtils)
-    schedule.scheduleJob('*/05 14-23 * * 1-6',scrapers.storeMemUtils)
-    schedule.scheduleJob('*/05 14-23 * * 1-6',scrapers.storeNetLatency)
+    schedule.scheduleJob('*/02 14-23 * * 0-6',scrapers.storeCpuUtils)
+    schedule.scheduleJob('*/02 14-23 * * 0-6',scrapers.storeMemUtils)
+    schedule.scheduleJob('*/02 14-23 * * 0-6',scrapers.storeNetLatency)
 }
 
 // dont remove this lines below, in case of node-scheduler fails
