@@ -32,16 +32,30 @@ app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`)
 })
 
+const currentTime = new Date()
+const hours = currentTime.getHours().toString()
+console.log(hours >= 0 && hours <= 8)
 // need testing
-schedule.scheduleJob('*/01 * * * 1-6', function () {
-    scrapers.storeCpuUtils,
-    scrapers.storeMemUtils,
-    scrapers.storeNetLatency
-})
+if (hours >= 0 && hours <= 8) {
+    schedule.scheduleJob('*/05 0-8 * * 1-6',scrapers.storeCpuUtils)
+    schedule.scheduleJob('*/05 0-8 * * 1-6',scrapers.storeMemUtils)
+    schedule.scheduleJob('*/05 0-8 * * 1-6',scrapers.storeNetLatency)
+}
+else if (hours >= 9 && hours <= 13) {
+    schedule.scheduleJob('*/01 9-13 * * 1-6',scrapers.storeCpuUtils)
+    schedule.scheduleJob('*/01 9-13 * * 1-6',scrapers.storeMemUtils)
+    schedule.scheduleJob('*/01 9-13 * * 1-6',scrapers.storeNetLatency)
+} 
+else if (hours >= 14 && hours >= 23) {
+    schedule.scheduleJob('*/05 14-23 * * 1-6',scrapers.storeCpuUtils)
+    schedule.scheduleJob('*/05 14-23 * * 1-6',scrapers.storeMemUtils)
+    schedule.scheduleJob('*/05 14-23 * * 1-6',scrapers.storeNetLatency)
+}
 
-scrapeInterval(scrapers.storeCpuUtils, 60)
-scrapeInterval(scrapers.storeMemUtils, 60)
-scrapeInterval(scrapers.storeNetLatency, 10)
+// dont remove this lines below, in case of node-scheduler fails
+// scrapeInterval(scrapers.storeCpuUtils, 60)
+// scrapeInterval(scrapers.storeMemUtils, 60)
+// scrapeInterval(scrapers.storeNetLatency, 10)
 
 function scrapeInterval(scrape, seconds) {
     let d = new Date()
