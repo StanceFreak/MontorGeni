@@ -67,13 +67,16 @@ async function getServerAvgMemory(req, res, next) {
 
 async function getServerMemUtilRecord(req, res, next) {
     try {
+        var query = ''
+        if (req.query.interval.includes(' day')) {
+            query = `SELECT * FROM cpu_util WHERE created_at BETWEEN CURDATE() - INTERVAL ${req.query.interval} AND CURDATE() - INTERVAL 1 SECOND`
+        } else if (req.query.interval.includes('today')) {
+            query = `SELECT * FROM cpu_util WHERE created_at >= CURDATE()`
+        }
         pool.getConnection(function (err, conn) {
             if (err) throw err
             conn.query(
-                // get data from db with interval of hours, minutes, seconds
-                `SELECT * FROM mem_util WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${req.query.interval})`,
-                // get data from db with interval of days
-                // `SELECT * FROM cpu_util WHERE created_at BETWEEN CURDATE() - INTERVAL 2 DAY AND CURDATE() - INTERVAL 1 SECOND`,
+                query,
                 function (error, results) {
                     if (error) throw error
                     res.status(200).json(
