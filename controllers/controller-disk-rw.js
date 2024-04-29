@@ -6,7 +6,7 @@ async function getServerDiskUtil(req, res, next) {
         let tempApiResponse = []
         let apiResponse = []
         const url = `${ROOT_URL}/query`
-        const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~"sda"}[1m])/1024 or rate(otel_system_disk_io_bytes_total{device="sr0"}[1m])/1024'}})
+        const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~".*da*"}[1m]) or rate(otel_system_disk_io_bytes_total{device=~".*db*"}[1m]) or rate(otel_system_disk_io_bytes_total{device=~".*sr.*"}[1m])'}})
         // get all sda and sr0 related drives
         // const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~".*sda.*"}[1m])/1024 or rate(otel_system_disk_io_bytes_total{device="sr0"}[1m])/1024'}})
         diskRw.data.data.result.map((data) => {
