@@ -6,7 +6,7 @@ async function getServerNetworkIo(req, res, next) {
         let networkUtilResponse = []
         let apiResponse = []
         const url = `${ROOT_URL}/query`
-        const nwReceive = await axios.get(url, {params: {query : 'rate(otel_system_network_io_bytes_total[2m])/1024'}})
+        const nwReceive = await axios.get(url, {params: {query : 'rate(otel_system_network_io_bytes_total[1m])/1024'}})
         const nwPacketsTotal = await axios.get(url, {params: {query : 'otel_system_network_packets_total/1024'}})
         nwReceive.data.data.result.map((utilData) => {
             nwPacketsTotal.data.data.result.map((packetsData) => {
@@ -53,7 +53,7 @@ async function getServerNetworkRt(req, res, next) {
         let tempApiResponse = []
         let apiResponse = []
         const url = `${ROOT_URL}/query`
-        const nwReceive = await axios.get(url, {params: {query : 'sum by(direction)(rate(otel_system_network_io_bytes_total[2m])/1024)'}})
+        const nwReceive = await axios.get(url, {params: {query : 'sum by(direction)(rate(otel_system_network_io_bytes_total[1m])/1024)'}})
         nwReceive.data.data.result.map((data) => {
             tempApiResponse.push({data})
         })

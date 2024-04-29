@@ -10,11 +10,19 @@ pool.on("error", (err) => {
 
 async function getServerCpuUtilRecord(req, res, next) {
     try {
+        var query = ''
+        console.log(req.query.interval)
+        if (req.query.interval.includes(' day')) {
+            query = `SELECT * FROM cpu_util WHERE created_at BETWEEN CURDATE() - INTERVAL ${req.query.interval} AND CURDATE() - INTERVAL 1 SECOND`
+        } else if (req.query.interval.includes('today')) {
+            query = `SELECT * FROM cpu_util WHERE created_at >= CURDATE()`
+        }
         pool.getConnection(function (err, conn) {
             if (err) throw err
             conn.query(
                 // get data from db with interval of hours, minutes, seconds
-                `SELECT * FROM cpu_util WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${req.query.interval})`,
+                query,
+                // `SELECT * FROM cpu_util WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${req.query.interval})`,
                 // get data from db with interval of days
                 // `SELECT * FROM cpu_util WHERE created_at BETWEEN CURDATE() - INTERVAL 2 DAY AND CURDATE() - INTERVAL 1 SECOND`,
                 function (error, results) {
@@ -40,7 +48,7 @@ async function getServerCpuUtil(req, res, next) {
     try {
         const objValues = {}
         const url = `${ROOT_URL}/query`
-        const cpuUtil = await axios.get(url, {params: {query: '100 - (avg by (instance) (rate(node_cpu_seconds_total{job="node-exporter", mode="idle"}[1m])) * 100)'}})
+        const cpuUtil = await axios.get(url, {params: {query: '(avg by (instance) (rate(otel_system_cpu_time_seconds_total[1m])) * 100)'}})
         cpuUtil.data.data.result.map((data) => {
             const unixTime = new Date(data.value[0] * 1000)
             objValues.value = data.value[1]

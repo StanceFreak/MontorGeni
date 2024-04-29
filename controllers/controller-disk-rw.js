@@ -6,9 +6,9 @@ async function getServerDiskUtil(req, res, next) {
         let tempApiResponse = []
         let apiResponse = []
         const url = `${ROOT_URL}/query`
-        const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~"sda"}[2m])/1024 or rate(otel_system_disk_io_bytes_total{device="sr0"}[2m])/1024'}})
+        const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~"sda"}[1m])/1024 or rate(otel_system_disk_io_bytes_total{device="sr0"}[1m])/1024'}})
         // get all sda and sr0 related drives
-        // const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~".*sda.*"}[2m])/1024 or rate(otel_system_disk_io_bytes_total{device="sr0"}[2m])/1024'}})
+        // const diskRw = await axios.get(url, {params: {query: 'rate(otel_system_disk_io_bytes_total{device=~".*sda.*"}[1m])/1024 or rate(otel_system_disk_io_bytes_total{device="sr0"}[1m])/1024'}})
         diskRw.data.data.result.map((data) => {
             tempApiResponse.push({data})
         })
@@ -46,7 +46,7 @@ async function getServerDiskRw(req, res, next) {
         let tempApiResponse = []
         let apiResponse = []
         const url = `${ROOT_URL}/query`
-        const diskRw = await axios.get(url, {params: {query: 'sum by (direction)(rate(otel_system_disk_io_bytes_total[2m])/1048576)'}})
+        const diskRw = await axios.get(url, {params: {query: 'sum by (direction)(otel_system_disk_io_bytes_total[1m])'}})
         diskRw.data.data.result.map((data) => {
             tempApiResponse.push({data})
         })

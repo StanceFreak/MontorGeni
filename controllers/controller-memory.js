@@ -15,11 +15,11 @@ async function getServerAvgMemory(req, res, next) {
         // create new object for storing the object values from api response
         const objValues = {}
         // http request using axios library with query params for the api calls to prometheus api
-        const avgMemTotal = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemTotal_bytes[1m]) / 1073741824'}})
-        const avgMemFree = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemFree_bytes[1m]) / 1073741824'}})
-        const avgMemCached = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Cached_bytes[1m]) / 1073741824'}})
-        const avgMemBuffers = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Buffers_bytes[1m]) / 1073741824'}})
-        const memAvailable = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemAvailable_bytes[1m]) / 1073741824'}})
+        const avgMemTotal = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemTotal_bytes[1m])'}})
+        const avgMemFree = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemFree_bytes[1m])'}})
+        const avgMemCached = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Cached_bytes[1m])'}})
+        const avgMemBuffers = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Buffers_bytes[1m])'}})
+        const memAvailable = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemAvailable_bytes[1m])'}})
         // mapping the array of objects for getting the values and add that value to the objValues Object
         avgMemTotal.data.data.result.map((data) => {
             const calc = parseFloat(data.value[1])
