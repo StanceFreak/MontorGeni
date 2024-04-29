@@ -46,7 +46,7 @@ async function getServerDiskRw(req, res, next) {
         let tempApiResponse = []
         let apiResponse = []
         const url = `${ROOT_URL}/query`
-        const diskRw = await axios.get(url, {params: {query: 'sum by (direction)(otel_system_disk_io_bytes_total[1m])'}})
+        const diskRw = await axios.get(url, {params: {query: 'sum by (direction)(rate(otel_system_disk_io_bytes_total[1m]))'}})
         diskRw.data.data.result.map((data) => {
             tempApiResponse.push({data})
         })
