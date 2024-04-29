@@ -8,11 +8,14 @@ pool.on("error", (err) => {
     console.error(err)
 })
 
-async function storeCpuUtils(req, res, next) {
+async function storeCpuUtils(interval) {
     try {
         const objValues = {}
         const url = `${ROOT_URL}/query`
-        const cpuUtil = await axios.get(url, {params: {query: '100 - (avg by (instance) (rate(node_cpu_seconds_total{job="node-exporter", mode="idle"}[1m])) * 100)'}})
+        //for testing 
+        const cpuUtil = await axios.get(url, {params: {query: `avg by (instance) (rate(otel_system_cpu_time_seconds_total[${interval}m])) * 100`}})
+        // for prod
+        // const cpuUtil = await axios.get(url, {params: {query: '100 - (avg by (instance) (rate(node_cpu_seconds_total{job="node-exporter", mode="idle"}[1m])) * 100)'}})
         cpuUtil.data.data.result.map((data) => {
             const unixTime = new Date(data.value[0] * 1000)
             objValues.value = data.value[1]
@@ -47,14 +50,14 @@ async function storeCpuUtils(req, res, next) {
     }
 }
 
-async function storeMemUtils() {
+async function storeMemUtils(interval) {
     try {
         const objValues = {}
         const url = `${ROOT_URL}/query`
-        const avgMemTotal = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemTotal_bytes{instance="localhost:9100"}[1m])'}})
-        const avgMemFree = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemFree_bytes{instance="localhost:9100"}[1m])'}})
-        const avgMemCached = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Cached_bytes{instance="localhost:9100"}[1m])'}})
-        const avgMemBuffers = await axios.get(url, {params: {query: 'avg_over_time(node_memory_Buffers_bytes{instance="localhost:9100"}[1m])'}})
+        const avgMemTotal = await axios.get(url, {params: {query: `avg_over_time(node_memory_MemTotal_bytes{instance="localhost:9100"}[${interval}m])`}})
+        const avgMemFree = await axios.get(url, {params: {query: `avg_over_time(node_memory_MemFree_bytes{instance="localhost:9100"}[${interval}m])`}})
+        const avgMemCached = await axios.get(url, {params: {query: `avg_over_time(node_memory_Cached_bytes{instance="localhost:9100"}[${interval}m])`}})
+        const avgMemBuffers = await axios.get(url, {params: {query: `avg_over_time(node_memory_Buffers_bytes{instance="localhost:9100"}[${interval}m])`}})
         avgMemTotal.data.data.result.map((data) => {
             const calc = parseInt(data.value[1])
             objValues.memTotals = calc
@@ -103,11 +106,11 @@ async function storeMemUtils() {
     }
 }
 
-async function storeNetLatency(req, res, next) {
+async function storeNetLatency(interval) {
     try {
         const url = `${ROOT_URL}/query`
         const objValues = {}
-        const serverLatency = await axios.get(url, {params: {query: 'sum(probe_icmp_duration_seconds{phase="rtt", instance="8.8.8.8"}) * 1000'}})
+        const serverLatency = await axios.get(url, {params: {query: `avg_over_time(probe_icmp_duration_seconds{phase="rtt", instance="8.8.8.8"}[${interval}m]) * 1000`}})
         serverLatency.data.data.result.map((data) => {
             const latency = parseFloat(data.value[1]).toFixed(1)
             const unixTime = new Date(data.value[0] * 1000)
