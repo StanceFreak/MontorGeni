@@ -38,7 +38,7 @@ async function storeCpuUtils(interval) {
         objValues.time = unixTime.toLocaleTimeString('en-GB')
         const cpuValues = Object.values(objValues)
         let emptyData = {
-            value: cpuValues[0],
+            value: cpuValues[0].toFixed(1),
             time: cpuValues[1]
         }
         pool.getConnection(function (err, conn) {
@@ -79,7 +79,7 @@ async function storeMemUtils(interval) {
         const memValues = Object.values(objValues)
         const avgServerMemory = 100 * (1- ((memValues[1] + memValues[2] + memValues[3]) / memValues[0]))
         let memData = {
-            value: avgServerMemory.toFixed(2),
+            value: avgServerMemory.toFixed(1),
             time: memValues[4]
         }
         pool.getConnection(function (err, conn) {
@@ -134,7 +134,7 @@ async function storeNetLatency(interval) {
         objValues.time = unixTime.toLocaleTimeString('en-GB')
         const latencyValues = Object.values(objValues)
         let emptyData = {
-            value: latencyValues[0],
+            value: latencyValues[0].toFixed(1),
             time: latencyValues[1]
         }
         pool.getConnection(function (err, conn) {
