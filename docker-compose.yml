@@ -1,0 +1,13 @@
+version: "2"
+services:
+  alertmanager-webhook-fcm:
+    container_name: alertmanager-webhook-fcm
+    image: jaymedh/alertmanager-webhook-fcm:v0.5
+    ports:
+      - 9716:9716
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/home/stancefreak/proyek/MontorGeni/montorgeni-firebase-adminsdk-h3tdg-4abe690e2d.json
+    volumes:
+      - /etc/ssl/certs:/etc/ssl/certs:ro
+      - ${GOOGLE_APPLICATION_CREDENTIALS}:/home/stancefreak/proyek/MontorGeni/montorgeni-firebase-adminsdk-h3tdg-4abe690e2d.json:ro
+    restart: unless-stopped
