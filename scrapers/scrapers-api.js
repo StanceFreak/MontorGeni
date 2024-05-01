@@ -13,7 +13,7 @@ async function storeCpuUtils(interval) {
         const objValues = {}
         const url = `${ROOT_URL}/query`
         //for testing 
-        const cpuUtil = await axios.get(url, {params: {query: `avg by (instance) (rate(otel_system_cpu_time_seconds_total[${interval}m])) * 100`}})
+        const cpuUtil = await axios.get(url, {params: {query: `(1-(avg by(instance)(rate(otel_system_cpu_time_seconds_total{state="idle"}[${interval}m])))) * 100`}})
         // for prod
         // const cpuUtil = await axios.get(url, {params: {query: '100 - (avg by (instance) (rate(node_cpu_seconds_total{job="node-exporter", mode="idle"}[1m])) * 100)'}})
         cpuUtil.data.data.result.map((data) => {
