@@ -24,8 +24,8 @@ async function getServerDiskUsage(req, res, next) {
                 message: "success",
                 data: {
                     usagePercentage: parseInt(diskUsagePercentage.toFixed(2)),
-                    usageSizeByte: diskValues[0],
-                    diskSizeTotal: diskValues[1],
+                    usageSizeByte: parseInt(diskValues[0]),
+                    diskSizeTotal: parseInt(diskValues[1]),
                     time: diskValues[2]
                 }
             }
