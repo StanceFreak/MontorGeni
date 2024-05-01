@@ -22,25 +22,20 @@ async function getServerAvgMemory(req, res, next) {
         const memAvailable = await axios.get(url, {params: {query: 'avg_over_time(node_memory_MemAvailable_bytes[1m])'}})
         // mapping the array of objects for getting the values and add that value to the objValues Object
         avgMemTotal.data.data.result.map((data) => {
-            const calc = parseFloat(data.value[1])
-            objValues.memTotals = calc
+            objValues.memTotals = data.value[1]
         })
         avgMemFree.data.data.result.map((data) => {
-            const calc = parseFloat(data.value[1])
-            objValues.memFree = calc
+            objValues.memFree = data.value[1]
         })
         avgMemCached.data.data.result.map((data) => {
-            const calc = parseFloat(data.value[1])
-            objValues.memCached = calc
+            objValues.memCached = data.value[1]
         })
         avgMemBuffers.data.data.result.map((data) => {
-            const calc = parseFloat(data.value[1])
-            objValues.memBuffers = calc
+            objValues.memBuffers = data.value[1]
         })
         memAvailable.data.data.result.map((data) => {
             const unixTime = new Date(data.value[0] * 1000)
-            const calc = parseFloat(data.value[1])
-            objValues.memAvailable = calc
+            objValues.memAvailable = data.value[1]
             objValues.date = unixTime.toLocaleTimeString('en-GB')
         })
         // getting the values only from the objValues Object
