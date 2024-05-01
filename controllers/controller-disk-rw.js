@@ -1,6 +1,41 @@
 const axios = require('axios')
 const {ROOT_URL} = require('../utils/options')
 
+async function getServerDiskUsage(req, res, next) {
+    try {
+        const url = `${ROOT_URL}/query`
+        const objValues = {}
+        const diskAvailSpace = await axios.get(url, {params: {query: 'node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100'}})
+        const diskTotalSpace = await axios.get(url, {params: {query: 'node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"}'}})
+
+        diskAvailSpace.data.data.result.map((data) => {
+            objValues.diskAvailable = data.value[1]
+        })
+        diskTotalSpace.data.data.result.map((data) => {
+            const unixTime = new Date(data.value[0] * 1000)
+            objValues.diskTotal = data.value[1]
+            objValues.date = unixTime.toLocaleTimeString('en-GB')
+        })
+        const diskValues = Object.values(objValues)
+        const diskUsagePercentage = 100 - (diskValues[0] / diskValues[1])
+        return res.status(200).json(
+            {
+                status: 200,
+                message: "success",
+                data: {
+                    usagePercentage: parseInt(diskUsagePercentage.toFixed(2)),
+                    usageSizeByte: diskValues[0],
+                    diskSizeTotal: diskValues[1],
+                    time: diskValues[2]
+                }
+            }
+        )
+    } catch (error) {
+        res.status(400)
+        next(Error(error.message))
+    }
+}
+
 async function getServerDiskUtil(req, res, next) {
     try {
         let tempApiResponse = []
@@ -71,5 +106,6 @@ async function getServerDiskRw(req, res, next) {
 
 module.exports = {
     getServerDiskUtil,
-    getServerDiskRw
+    getServerDiskRw,
+    getServerDiskUsage
 }

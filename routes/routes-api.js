@@ -26,6 +26,8 @@ function routesApi() {
 
     router.get("/server/disk-util/total", controller.getServerDiskRw)
 
+    router.get("/server/disk-util/usage", controller.getServerDiskUsage)
+
     router.get("/server/network/performance/packet-loss", controller.getNetworkPacketLoss)
 
     return router
