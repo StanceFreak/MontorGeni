@@ -48,7 +48,7 @@ async function getServerCpuUtil(req, res, next) {
     try {
         const objValues = {}
         const url = `${ROOT_URL}/query`
-        const cpuUtil = await axios.get(url, {params: {query: '(avg by (instance) (rate(otel_system_cpu_time_seconds_total[1m])) * 100)'}})
+        const cpuUtil = await axios.get(url, {params: {query: '(1-(avg by(instance)(rate(otel_system_cpu_time_seconds_total{state="idle"}[1m])))) * 100'}})
         cpuUtil.data.data.result.map((data) => {
             const unixTime = new Date(data.value[0] * 1000)
             objValues.value = data.value[1]
