@@ -128,14 +128,16 @@ async function notifScraper(type) {
                         return obj
                     }, {})
                     const finalObj = Object.values(mergeObj)
-                    const notif = {
-                        notification: {
-                            title: `[Critical] ${finalObj.length} server instances down`,
-                            body: `You may need to check the instance on the server`
-                        },
-                        topic: "all"
+                    if (finalObj.length > 0) {
+                        const notif = {
+                            notification: {
+                                title: `[Critical] ${finalObj.length} server instances down`,
+                                body: `You may need to check the instance on the server`
+                            },
+                            topic: "all"
+                        }
+                        admin.messaging().send(notif)
                     }
-                    admin.messaging().send(notif)
                 } catch (error) {
                     // for prod
                     // if (error.message == "connect ECONNREFUSED 134.209.98.161:9090") {
