@@ -4,6 +4,7 @@ const {PORT} = require("./utils/options");
 const routesApi = require('./routes/routes-api');
 const scrapers = require('./scrapers/scrapers-api');
 const schedule = require('node-schedule');
+const scraperNotif = require('./scrapers/scrapers-notification')
 const currentTime = new Date()
 
 app.use(express.json())
@@ -36,4 +37,8 @@ schedule.scheduleJob(`* * * * 0-6`, async () => {
     await scrapers.storeNetLatency(1),
     await scrapers.storeMemUtils(1),
     await scrapers.storeCpuUtils(1)
+    await scraperNotif('memoryUsage')
+    await scraperNotif('cpuUsage')
+    await scraperNotif('diskUsage')
+    await scraperNotif('serviceDown')
 })
