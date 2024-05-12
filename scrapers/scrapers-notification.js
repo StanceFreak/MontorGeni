@@ -25,20 +25,38 @@ async function notifScraper(type) {
                                 const notif = {
                                     notification: {
                                         title: "[Warning] Server high memory usage",
-                                        body: `Memory usage is at ${memUsage}%`
+                                        body: `Memory usage is at ${memUsage}%`,
+                                    },
+                                    android: {
+                                        notification: {
+                                            channelId: "101"
+                                        }
                                     },
                                     topic: "all"
                                 }
+                                storeNotif(
+                                    "[Warning] Server high memory usage",
+                                    `Memory usage is at ${memUsage}%`
+                                )
                                 admin.messaging().send(notif)
                             }
                             else if(memUsage > 70.0) {
                                 const notif = {
                                     notification: {
                                         title: "[Critical] Server high memory usage",
-                                        body: `Memory usage is at ${memUsage}%`
+                                        body: `Memory usage is at ${memUsage}%`,
+                                    },
+                                    android: {
+                                        notification: {
+                                            channelId: "101"
+                                        }
                                     },
                                     topic: "all"
                                 }
+                                storeNotif(
+                                    "[Critical] Server high memory usage",
+                                    `Memory usage is at ${memUsage}%`
+                                )
                                 admin.messaging().send(notif)
                             }
                         }
@@ -56,19 +74,37 @@ async function notifScraper(type) {
                     const notif = {
                         notification: {
                             title: "[Warning] Server high disk usage",
-                            body: `Memory usage is at ${usageValue}%`
+                            body: `Disk usage is at ${usageValue}%`,
+                        },
+                        android: {
+                            notification: {
+                                channelId: "102"
+                            }
                         },
                         topic: "all"
                     }
+                    storeNotif(
+                        "[Warning] Server high disk usage",
+                        `Disk usage is at ${usageValue}%`,
+                    )
                     admin.messaging().send(notif)
                 } else if (usageValue > 70.0) {
                     const notif = {
                         notification: {
                             title: "[Citical] Server high disk usage",
-                            body: `Memory usage is at ${usageValue}%`
+                            body: `Disk usage is at ${usageValue}%`,
+                        },
+                        android: {
+                            notification: {
+                                channelId: "102"
+                            }
                         },
                         topic: "all"
                     }
+                    storeNotif(
+                        "[Citical] Server high disk usage",
+                        `Disk usage is at ${usageValue}%`,
+                    )
                     admin.messaging().send(notif)
                 }
                 break;
@@ -84,20 +120,38 @@ async function notifScraper(type) {
                                 const notif = {
                                     notification: {
                                         title: "[Warning] Server high CPU usage",
-                                        body: `CPU usage is at ${cpuUsage}%`
+                                        body: `CPU usage is at ${cpuUsage}%`,
+                                    },
+                                    android: {
+                                        notification: {
+                                            channelId: "103"
+                                        }
                                     },
                                     topic: "all"
                                 }
+                                storeNotif(
+                                    "[Warning] Server high CPU usage",
+                                    `CPU usage is at ${cpuUsage}%`,
+                                )
                                 admin.messaging().send(notif)
                             }
                             else if(cpuUsage > 70.0) {
                                 const notif = {
                                     notification: {
                                         title: "[Critical] Server high CPU usage",
-                                        body: `CPU usage is at ${cpuUsage}%`
+                                        body: `CPU usage is at ${cpuUsage}%`,
+                                    },
+                                    android: {
+                                        notification: {
+                                            channelId: "103"
+                                        }
                                     },
                                     topic: "all"
                                 }
+                                storeNotif(
+                                    "[Critical] Server high CPU usage",
+                                    `CPU usage is at ${cpuUsage}%`,
+                                )
                                 admin.messaging().send(notif)
                             }
                         }
@@ -132,29 +186,68 @@ async function notifScraper(type) {
                         const notif = {
                             notification: {
                                 title: `[Critical] ${finalObj.length} server instances down`,
-                                body: `You may need to check the instance on the server`
+                                body: `You may need to check the instance on the server`,
+                            },
+                            android: {
+                                notification: {
+                                    channelId: "104"
+                                }
                             },
                             topic: "all"
                         }
+                        storeNotif(
+                            `[Critical] ${finalObj.length} server instances down`,
+                            `You may need to check the instance on the server`,
+                        )
                         admin.messaging().send(notif)
                     }
                 } catch (error) {
                     // for prod
-                    // if (error.message == "connect ECONNREFUSED 134.209.98.161:9090") {
+                    if (error.message == "connect ECONNREFUSED 134.209.98.161:9090") {
                     // for test
-                    if (error.message == "connect ECONNREFUSED 127.0.0.1:9090") {
+                    // if (error.message == "connect ECONNREFUSED 127.0.0.1:9090") {
                         const notif = {
                             notification: {
                                 title: `[Critical] Error connecting to Prometheus`,
-                                body: `Server can't connect to the Prometheus`
+                                body: `Server can't connect to the Prometheus`,
+                            },
+                            android: {
+                                notification: {
+                                    channelId: "104"
+                                }
                             },
                             topic: "all"
                         }
+                        storeNotif(
+                            `[Critical] Error connecting to Prometheus`,
+                            `Server can't connect to the Prometheus`,
+                        )
                         admin.messaging().send(notif)
                     }
                 }
                 break;
         }
+}
+
+async function storeNotif(notifTitle, notifBody, currentTime, currentDay) {
+    try {
+        const date = new Date()
+        const currentTime = date.toLocaleTimeString('en-GB')
+        const currentDate = date.toLocaleDateString('en-GB')
+        let notifData = {
+            title: notifTitle,
+            body: notifBody,
+            time: currentTime,
+            date: currentDate
+        }
+        pool.getConnection(function (err, conn) {
+            if (err) throw err
+            conn.query(`INSERT INTO notif_alert SET ?;`, [notifData])
+            conn.release()
+        })
+    } catch (error) {
+        console.log(`MySQL error: ${error.message}`)
+    }
 }
 
 module.exports = notifScraper
