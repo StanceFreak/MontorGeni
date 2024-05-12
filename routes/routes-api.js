@@ -16,6 +16,8 @@ function routesApi() {
 
     router.get("/server/net-latency/record?:interval", controller.getNetworkLatencyRecord)
 
+    router.get("/server/notifications/record", controller.getNotifRecord)
+
     router.get("/server/cpu-util", controller.getServerCpuUtil)
 
     router.get("/server/network-util", controller.getServerNetworkIo)
