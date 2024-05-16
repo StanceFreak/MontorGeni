@@ -29,7 +29,8 @@ async function notifScraper(type) {
                                     },
                                     android: {
                                         notification: {
-                                            channelId: "101"
+                                            channelId: "101",
+                                            tag: "memUsage"
                                         }
                                     },
                                     topic: "all"
@@ -48,7 +49,8 @@ async function notifScraper(type) {
                                     },
                                     android: {
                                         notification: {
-                                            channelId: "101"
+                                            channelId: "101",
+                                            tag: "memUsage"
                                         }
                                     },
                                     topic: "all"
@@ -78,7 +80,8 @@ async function notifScraper(type) {
                         },
                         android: {
                             notification: {
-                                channelId: "102"
+                                channelId: "102",
+                                tag: "diskUsage"
                             }
                         },
                         topic: "all"
@@ -96,7 +99,8 @@ async function notifScraper(type) {
                         },
                         android: {
                             notification: {
-                                channelId: "102"
+                                channelId: "102",
+                                tag: "diskUsage"
                             }
                         },
                         topic: "all"
@@ -124,7 +128,8 @@ async function notifScraper(type) {
                                     },
                                     android: {
                                         notification: {
-                                            channelId: "103"
+                                            channelId: "103",
+                                            tag: "cpuUsage"
                                         }
                                     },
                                     topic: "all"
@@ -143,7 +148,8 @@ async function notifScraper(type) {
                                     },
                                     android: {
                                         notification: {
-                                            channelId: "103"
+                                            channelId: "103",
+                                            tag: "cpuUsage"
                                         }
                                     },
                                     topic: "all"
@@ -190,7 +196,8 @@ async function notifScraper(type) {
                             },
                             android: {
                                 notification: {
-                                    channelId: "104"
+                                    channelId: "104",
+                                    tag: "instanceDown"
                                 }
                             },
                             topic: "all"
@@ -213,7 +220,8 @@ async function notifScraper(type) {
                             },
                             android: {
                                 notification: {
-                                    channelId: "104"
+                                    channelId: "104",
+                                    tag: "prometheusDown"
                                 }
                             },
                             topic: "all"
