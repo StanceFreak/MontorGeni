@@ -36,9 +36,9 @@ app.listen(PORT, () => {
 schedule.scheduleJob(`* * * * 0-6`, async () => {
     await scrapers.storeNetLatency(1),
     await scrapers.storeMemUtils(1),
-    await scrapers.storeCpuUtils(1)
-    await scraperNotif('memoryUsage')
-    await scraperNotif('cpuUsage')
-    await scraperNotif('diskUsage')
+    await scrapers.storeCpuUtils(1),
+    await scraperNotif('memoryUsage'),
+    await scraperNotif('cpuUsage'),
+    await scraperNotif('diskUsage'),
     await scraperNotif('serviceDown')
 })
