@@ -9,160 +9,180 @@ admin.initializeApp({
     credential: admin.credential.cert('./serviceAccountKey.json')
 })
 
+pool.on("error", (err) => {
+    console.error(err)
+})
+
 async function notifScraper(type) {
     const url = `${ROOT_URL}/query`
         const objValues = {}
         switch (type) {
             case 'memoryUsage':
-                pool.getConnection(function (err, conn) {
-                    if (err) throw err
-                    conn.query(
-                        'select * from mem_util order by id desc limit 1;',
-                        function (error, results) {
-                            if (error) throw error
-                            const memUsage = results[0].value
-                            if (memUsage >= 50.0 && memUsage <= 70.0) {
-                                const notif = {
-                                    notification: {
-                                        title: "[Warning] Server high memory usage",
-                                        body: `Memory usage is at ${memUsage}%`,
-                                    },
-                                    android: {
+                try {
+                    pool.getConnection(function (err, conn) {
+                        if (err) throw err
+                        conn.query(
+                            'select * from mem_util order by id desc limit 1;',
+                            function (error, results) {
+                                if (error) throw error
+                                const memUsage = results[0].value
+                                if (memUsage >= 50.0 && memUsage <= 70.0) {
+                                    const notif = {
                                         notification: {
-                                            channelId: "101",
-                                            tag: "memUsage"
-                                        }
-                                    },
-                                    topic: "all"
+                                            title: "[Warning] Server high memory usage",
+                                            body: `Memory usage is at ${memUsage}%`,
+                                        },
+                                        android: {
+                                            notification: {
+                                                channelId: "101",
+                                                tag: "memUsage"
+                                            }
+                                        },
+                                        topic: "all"
+                                    }
+                                    storeNotif(
+                                        "[Warning] Server high memory usage",
+                                        `Memory usage is at ${memUsage}%`,
+                                    )
+                                    admin.messaging().send(notif)
                                 }
-                                storeNotif(
-                                    "[Warning] Server high memory usage",
-                                    `Memory usage is at ${memUsage}%`
-                                )
-                                admin.messaging().send(notif)
-                            }
-                            else if(memUsage > 70.0) {
-                                const notif = {
-                                    notification: {
-                                        title: "[Critical] Server high memory usage",
-                                        body: `Memory usage is at ${memUsage}%`,
-                                    },
-                                    android: {
+                                else if(memUsage > 70.0) {
+                                    const notif = {
                                         notification: {
-                                            channelId: "101",
-                                            tag: "memUsage"
-                                        }
-                                    },
-                                    topic: "all"
+                                            title: "[Critical] Server high memory usage",
+                                            body: `Memory usage is at ${memUsage}%`,
+                                        },
+                                        android: {
+                                            notification: {
+                                                channelId: "101",
+                                                tag: "memUsage"
+                                            }
+                                        },
+                                        topic: "all"
+                                    }
+                                    storeNotif(
+                                        "[Critical] Server high memory usage",
+                                        `Memory usage is at ${memUsage}%`,
+                                    )
+                                    admin.messaging().send(notif)
                                 }
-                                storeNotif(
-                                    "[Critical] Server high memory usage",
-                                    `Memory usage is at ${memUsage}%`
-                                )
-                                admin.messaging().send(notif)
                             }
-                        }
-                    )
-                })
+                        )
+                        conn.release()
+                    })
+                } catch (error) {
+                    console.log(`Memory alert error: ${error.message}`)
+                }
                 break;
             case 'diskUsage':
-                const diskUsage = await axios.get(url, {params: {query: 'round(100 - ((node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"}))'}})
-                diskUsage.data.data.result.map((data) => {
-                    objValues.value = data.value[1]
-                })
-                const diskValues = Object.values(objValues)
-                const usageValue = diskValues[0]
-                if (usageValue >= 50.0 && usageValue <= 70.0) {
-                    const notif = {
-                        notification: {
-                            title: "[Warning] Server high disk usage",
-                            body: `Disk usage is at ${usageValue}%`,
-                        },
-                        android: {
+                try {
+                    const objValues = {}
+                    const url = `${ROOT_URL}/query`
+                    const diskUsage = await axios.get(url, {params: {query: 'round(100 - ((node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"}))'}})
+                    diskUsage.data.data.result.map((data) => {
+                        objValues.value = data.value[1]
+                    })
+                    const diskValues = Object.values(objValues)
+                    const usageValue = diskValues[0]
+                    if (usageValue >= 50.0 && usageValue <= 70.0) {
+                        const notif = {
                             notification: {
-                                channelId: "102",
-                                tag: "diskUsage"
-                            }
-                        },
-                        topic: "all"
-                    }
-                    storeNotif(
-                        "[Warning] Server high disk usage",
-                        `Disk usage is at ${usageValue}%`,
-                    )
-                    admin.messaging().send(notif)
-                } else if (usageValue > 70.0) {
-                    const notif = {
-                        notification: {
-                            title: "[Citical] Server high disk usage",
-                            body: `Disk usage is at ${usageValue}%`,
-                        },
-                        android: {
+                                title: "[Warning] Server high disk usage",
+                                body: `Disk usage is at ${usageValue}%`,
+                            },
+                            android: {
+                                notification: {
+                                    channelId: "102",
+                                    tag: "diskUsage"
+                                }
+                            },
+                            topic: "all"
+                        }
+                        storeNotif(
+                            "[Warning] Server high disk usage",
+                            `Disk usage is at ${usageValue}%`,
+                        )
+                        admin.messaging().send(notif)
+                    } else if (usageValue > 70.0) {
+                        const notif = {
                             notification: {
-                                channelId: "102",
-                                tag: "diskUsage"
-                            }
-                        },
-                        topic: "all"
+                                title: "[Citical] Server high disk usage",
+                                body: `Disk usage is at ${usageValue}%`,
+                            },
+                            android: {
+                                notification: {
+                                    channelId: "102",
+                                    tag: "diskUsage"
+                                }
+                            },
+                            topic: "all"
+                        }
+                        storeNotif(
+                            "[Citical] Server high disk usage",
+                            `Disk usage is at ${usageValue}%`,
+                        )
+                        admin.messaging().send(notif)
                     }
-                    storeNotif(
-                        "[Citical] Server high disk usage",
-                        `Disk usage is at ${usageValue}%`,
-                    )
-                    admin.messaging().send(notif)
+                } catch (error) {
+                    console.log(`Disk alert error: ${error.message}`)
                 }
                 break;
             case 'cpuUsage':
-                pool.getConnection(function (err, conn) {
-                    if (err) throw err
-                    conn.query(
-                        'select * from cpu_util order by id desc limit 1;',
-                        function (error, results) {
-                            if (error) throw error
-                            const cpuUsage = results[0].value
-                            if (cpuUsage >= 30.0 && cpuUsage <= 70.0) {
-                                const notif = {
-                                    notification: {
-                                        title: "[Warning] Server high CPU usage",
-                                        body: `CPU usage is at ${cpuUsage}%`,
-                                    },
-                                    android: {
+                try {
+                    pool.getConnection(function (err, conn) {
+                        if (err) throw err
+                        conn.query(
+                            'select * from cpu_util order by id desc limit 1;',
+                            function (error, results) {
+                                if (error) throw error
+                                const cpuUsage = results[0].value
+                                if (cpuUsage >= 30.0 && cpuUsage <= 70.0) {
+                                    const notif = {
                                         notification: {
-                                            channelId: "103",
-                                            tag: "cpuUsage"
-                                        }
-                                    },
-                                    topic: "all"
+                                            title: "[Warning] Server high CPU usage",
+                                            body: `CPU usage is at ${cpuUsage}%`,
+                                        },
+                                        android: {
+                                            notification: {
+                                                channelId: "103",
+                                                tag: "cpuUsage"
+                                            }
+                                        },
+                                        topic: "all"
+                                    }
+                                    storeNotif(
+                                        "[Warning] Server high CPU usage",
+                                        `CPU usage is at ${cpuUsage}%`,
+                                    )
+                                    admin.messaging().send(notif)
                                 }
-                                storeNotif(
-                                    "[Warning] Server high CPU usage",
-                                    `CPU usage is at ${cpuUsage}%`,
-                                )
-                                admin.messaging().send(notif)
-                            }
-                            else if(cpuUsage > 70.0) {
-                                const notif = {
-                                    notification: {
-                                        title: "[Critical] Server high CPU usage",
-                                        body: `CPU usage is at ${cpuUsage}%`,
-                                    },
-                                    android: {
+                                else if(cpuUsage > 70.0) {
+                                    const notif = {
                                         notification: {
-                                            channelId: "103",
-                                            tag: "cpuUsage"
-                                        }
-                                    },
-                                    topic: "all"
+                                            title: "[Critical] Server high CPU usage",
+                                            body: `CPU usage is at ${cpuUsage}%`,
+                                        },
+                                        android: {
+                                            notification: {
+                                                channelId: "103",
+                                                tag: "cpuUsage"
+                                            }
+                                        },
+                                        topic: "all"
+                                    }
+                                    storeNotif(
+                                        "[Critical] Server high CPU usage",
+                                        `CPU usage is at ${cpuUsage}%`, 
+                                    )
+                                    admin.messaging().send(notif)
                                 }
-                                storeNotif(
-                                    "[Critical] Server high CPU usage",
-                                    `CPU usage is at ${cpuUsage}%`,
-                                )
-                                admin.messaging().send(notif)
                             }
-                        }
-                    )
-                })
+                        )
+                        conn.release()
+                    })
+                } catch (error) {
+                    console.log(`CPU alert error: ${error.message}`)
+                }
                 break;
             case 'serviceDown':
                 try {
@@ -237,7 +257,7 @@ async function notifScraper(type) {
         }
 }
 
-async function storeNotif(notifTitle, notifBody, currentTime, currentDay) {
+async function storeNotif(notifTitle, notifBody) {
     try {
         const date = new Date()
         const currentTime = date.toLocaleTimeString('en-GB')
