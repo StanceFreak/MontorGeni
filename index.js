@@ -39,6 +39,9 @@ schedule.scheduleJob(`* * * * 0-6`, async () => {
     await scrapers.storeCpuUtils(1),
     await scraperNotif('memoryUsage'),
     await scraperNotif('cpuUsage'),
-    await scraperNotif('diskUsage'),
     await scraperNotif('serviceDown')
+})
+
+schedule.scheduleJob(`*/30 * * * 0-6`, async () => {
+    await scraperNotif('diskUsage')
 })
