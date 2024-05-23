@@ -230,7 +230,7 @@ async function notifScraper(type) {
                     }
                 } catch (error) {
                     // for prod
-                    if (error.message == "connect ECONNREFUSED 134.209.98.161:9090") {
+                    if (error.message == "connect ECONNREFUSED 128.199.135.220:9090") {
                     // for test
                     // if (error.message == "connect ECONNREFUSED 127.0.0.1:9090") {
                         const notif = {
