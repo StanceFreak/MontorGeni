@@ -35,12 +35,14 @@ async function getServerStatus(req, res, next) {
 async function postServerStatus(req, res, next) {
     try {
         await ssh.connect(config).then(function() {
-            ssh.execCommand(`echo "ubuntu" | sudo -S systemctl ${req.body.command} prometheus`, [], {stdin: 'ubuntu\n', pty: true}).then(function(result) {
+            // ssh.execCommand(`echo "ubuntu" | sudo -S systemctl ${req.body.command} prometheus`, [], {stdin: 'ubuntu\n', pty: true}).then(function(result) {
+            ssh.execCommand(`systemctl ${req.body.command} prometheus`, [], {stdin: 'ubuntu\n', pty: true}).then(function(result) {
                 if(req.body.command == "stop") {
                     res.status(200).json({
                         status: 200,
                         message: "Success",
                         data: {
+
                             result: "Server inactive"
                         }
                     })
@@ -52,6 +54,17 @@ async function postServerStatus(req, res, next) {
                             message: "Success",
                             data: {
                                 result: "Server restarted"
+                            }
+                        }
+                    )
+                }
+                else if (req.body.command == "start") {
+                    res.status(200).json(
+                        {
+                            status: 200,
+                            message: "Success",
+                            data: {
+                                result: "Server is running"
                             }
                         }
                     )
