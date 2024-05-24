@@ -48,6 +48,7 @@ async function getServerAvgMemory(req, res, next) {
 
 async function getServerMemUtilRecord(req, res, next) {
     try {
+        const startTime = performance.now()
         var query = ''
         if (req.query.interval.includes('1')) {
             query = `SELECT * FROM mem_util WHERE created_at BETWEEN CURDATE() - INTERVAL 1 DAY AND CURDATE() - INTERVAL 1 SECOND`
@@ -70,6 +71,9 @@ async function getServerMemUtilRecord(req, res, next) {
                             data: results
                         }
                     )
+                    const endTime = performance.now()
+                    const execTime = endTime - startTime
+                    console.log(`retrieve records delay log: ${execTime.toFixed(1)}ms`)
                 }
             )
             conn.release()
