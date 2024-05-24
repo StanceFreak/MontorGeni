@@ -12,19 +12,10 @@ async function getServerStatus(req, res, next) {
         status.data.data.result.map((data) => {
             objResponse.up = data.value[1]
         })
-        await ssh.connect(config).then(function() {
-            ssh.execCommand("uptime -p").then(function(result) {
-                if (result.stderr) {
-                    console.log('stderr:', result.stderr)
-                } else {
-                    objResponse.serverUptime = result.stdout.replace("up ", "")
-                    return res.status(200).json({
-                        status: 200,
-                        message: "success",
-                        data: objResponse
-                    })
-                }
-            })
+        return res.status(200).json({
+            status: 200,
+            message: "success",
+            data: objResponse
         })
     } catch (err) {
         res.status(400)
@@ -42,7 +33,6 @@ async function postServerStatus(req, res, next) {
                         status: 200,
                         message: "Success",
                         data: {
-
                             result: "Server inactive"
                         }
                     })
@@ -80,7 +70,29 @@ async function postServerStatus(req, res, next) {
     }
 }
 
+async function getServerUptime(req, res, next) {
+    try {
+        await ssh.connect(config).then(function() {
+            ssh.execCommand("uptime -p").then(function(result) {
+                if (result.stderr) {
+                    console.log('stderr:', result.stderr)
+                } else {
+                    return res.status(200).json({
+                        status: 200,
+                        message: "success",
+                        data: result.stdout.replace("up ", "")
+                    })
+                }
+            })
+        })
+    } catch (error) {
+        res.status(400)
+        next(Error(error.message))
+    }
+}
+
 module.exports = {
     getServerStatus,
-    postServerStatus
+    postServerStatus,
+    getServerUptime
 }

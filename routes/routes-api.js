@@ -8,6 +8,8 @@ function routesApi() {
 
     router.post("/server/change-status", controller.postServerStatus)
 
+    router.get("/server/uptime", controller.getServerUptime)
+
     router.get("/server/average-memory", controller.getServerAvgMemory)
 
     router.get("/server/cpu-util/record?:interval", controller.getServerCpuUtilRecord)

@@ -1,4 +1,4 @@
-const {getServerStatus, postServerStatus} = require("./controller-status")
+const {getServerStatus, postServerStatus, getServerUptime} = require("./controller-status")
 const {getServerAvgMemory, getServerMemUtilRecord} = require("./controller-memory")
 const {getServerCpuUtilRecord, getServerCpuUtil} = require("./controller-cpu-util")
 const {getServerNetworkIo, getServerNetworkRt} = require("./controller-network-io")
@@ -9,6 +9,7 @@ const getNotifRecord = require("./controller-notif")
 module.exports = {
     getServerStatus,
     postServerStatus,
+    getServerUptime,
     getServerAvgMemory,
     getServerMemUtilRecord,
     getServerCpuUtilRecord,
