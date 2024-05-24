@@ -186,7 +186,6 @@ async function notifScraper(type) {
             break;
         case 'serviceDown':
             try {
-                console.time("alerts delay log")
                 const tempApiResponse = []
                 const apiResponse = []
                 const instanceStatus = await axios.get(url, {params: {query: 'up == 0'}})
@@ -228,7 +227,6 @@ async function notifScraper(type) {
                         `You may need to check the instance on the server`,
                     )
                     admin.messaging().send(notif)
-                    console.timeEnd("alerts delay log")
                 }
             } catch (error) {
                 // for prod
@@ -253,7 +251,6 @@ async function notifScraper(type) {
                         `Server can't connect to the Prometheus`,
                     )
                     admin.messaging().send(notif)
-                    console.timeEnd("alerts delay log")
                 }
             }
             break;
