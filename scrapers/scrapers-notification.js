@@ -15,6 +15,7 @@ pool.on("error", (err) => {
 })
 
 async function getMemoryAlert() {
+    const startTime = performance.now()
     try {
         pool.getConnection(function (err, conn) {
             if (err) throw err
@@ -23,7 +24,7 @@ async function getMemoryAlert() {
                 function (error, results) {
                     if (error) throw error
                     const memUsage = results[0].value
-                    if (memUsage >= 20.0 && memUsage <= 70.0) {
+                    if (memUsage >= 15.0 && memUsage <= 70.0) {
                         const notif = {
                             notification: {
                                 title: "[Warning] Server high memory usage",
@@ -42,6 +43,9 @@ async function getMemoryAlert() {
                             `Memory usage is at ${memUsage}%`,
                         )
                         admin.messaging().send(notif)
+                        const endTime = performance.now()
+                        const execTime = endTime - startTime
+                        console.log(`alerts delay log: ${execTime.toFixed(1)}ms`)
                     }
                     else if(memUsage > 70.0) {
                         const notif = {
@@ -62,6 +66,9 @@ async function getMemoryAlert() {
                             `Memory usage is at ${memUsage}%`,
                         )
                         admin.messaging().send(notif)
+                        const endTime = performance.now()
+                        const execTime = endTime - startTime
+                        console.log(`alerts delay log: ${execTime.toFixed(1)}ms`)
                     }
                 }
             )
