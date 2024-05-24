@@ -80,7 +80,9 @@ async function getServerUptime(req, res, next) {
                     return res.status(200).json({
                         status: 200,
                         message: "success",
-                        data: result.stdout.replace("up ", "")
+                        data: {
+                            uptime: result.stdout.replace("up ", "")
+                        }
                     })
                 }
             })
