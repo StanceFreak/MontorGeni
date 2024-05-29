@@ -87,11 +87,15 @@ async function postServerStatus(req, res, next) {
 
 async function getServerUptime(req, res, next) {
     try {
+        const startTime = performance.now()
         await ssh.connect(config).then(function() {
             ssh.execCommand("uptime -p").then(function(result) {
                 if (result.stderr) {
                     console.log('stderr:', result.stderr)
                 } else {
+                    const endTime = performance.now()
+                    const execTime = endTime - startTime
+                    console.log(`start service delay log: ${execTime.toFixed(1)}ms`)
                     return res.status(200).json({
                         status: 200,
                         message: "success",
