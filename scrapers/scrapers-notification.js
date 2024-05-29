@@ -62,9 +62,6 @@ async function getMemoryAlert() {
                             `Memory usage is at ${memUsage}%`,
                         )
                         admin.messaging().send(notif)
-                        const endTime = performance.now()
-                        const execTime = endTime - startTime
-                        console.log(`alerts delay log: ${execTime.toFixed(1)}ms`)
                     }
                 }
             )
