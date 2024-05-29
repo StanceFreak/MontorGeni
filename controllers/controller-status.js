@@ -95,7 +95,7 @@ async function getServerUptime(req, res, next) {
                 } else {
                     const endTime = performance.now()
                     const execTime = endTime - startTime
-                    console.log(`start service delay log: ${execTime.toFixed(1)}ms`)
+                    console.log(`server uptime delay log: ${execTime.toFixed(1)}ms`)
                     return res.status(200).json({
                         status: 200,
                         message: "success",
