@@ -174,9 +174,6 @@ async function getCpuAlert() {
                             `CPU usage is at ${cpuUsage}%`, 
                         )
                         admin.messaging().send(notif)
-                        const endTime = performance.now()
-                        const execTime = endTime - startTime
-                        console.log(`alerts delay log: ${execTime.toFixed(1)}ms`)
                     }
                 }
             )

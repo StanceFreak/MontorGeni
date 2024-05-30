@@ -10,7 +10,6 @@ pool.on("error", (err) => {
 
 async function storeCpuUtils(interval) {
     try {
-        console.time("data metrics delay log")
         const objValues = {}
         const url = `${ROOT_URL}/query`
         //for testing 
@@ -33,8 +32,6 @@ async function storeCpuUtils(interval) {
                 conn.query(`INSERT INTO cpu_util SET ?;`, [cpuData])
                 conn.release()
             })
-            
-            console.timeEnd("data metrics delay log")
         } else {
             const unixTime = new Date()
             objValues.value = 0.0
@@ -49,7 +46,6 @@ async function storeCpuUtils(interval) {
                 conn.query(`INSERT INTO cpu_util SET ?;`, [emptyData])
                 conn.release()
             })
-            console.timeEnd("data metrics delay log")
         }
     } catch (error) {
         const objValues = {}
