@@ -135,6 +135,7 @@ async function getMemoryAlert() {
 
 async function getDiskAlert() {
     try {
+        let tokenList = []
         const objValues = {}
         const url = `${ROOT_URL}/query`
         const diskUsage = await axios.get(url, {params: {query: 'round(100 - ((node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"}))'}})
@@ -143,7 +144,7 @@ async function getDiskAlert() {
         })
         const diskValues = Object.values(objValues)
         const usageValue = diskValues[0]
-        if (usageValue >= 50.0 && usageValue <= 70.0) {
+        if (usageValue >= 10.0 && usageValue <= 70.0) {
             conn.query(
                 "SELECT * FROM device_tokens;",
                 function (errorToken, resultsToken) {
@@ -249,6 +250,7 @@ async function getDiskAlert() {
 
 async function getCpuAlert() {
     try {
+        let tokenList = []
         pool.getConnection(function (err, conn) {
             if (err) throw err
             conn.query(
@@ -256,7 +258,7 @@ async function getCpuAlert() {
                 function (error, results) {
                     if (error) throw error
                     const cpuUsage = results[0].value
-                    if (cpuUsage >= 50.0 && cpuUsage <= 70.0) {
+                    if (cpuUsage >= 10.0 && cpuUsage <= 70.0) {
                         conn.query(
                             "SELECT * FROM device_tokens;",
                             function (errorToken, resultsToken) {
@@ -368,6 +370,7 @@ async function getCpuAlert() {
 async function getServiceAlert(type) {
     const url = `${ROOT_URL}/query`
     try {
+        let tokenList = []
         const tempApiResponse = []
         const apiResponse = []
         const instanceStatus = await axios.get(url, {params: {query: 'up == 0'}})
