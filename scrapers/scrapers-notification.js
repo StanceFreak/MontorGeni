@@ -31,9 +31,7 @@ async function getMemoryAlert() {
                                 if (errorToken) throw errorToken
                                 for (let i = 0; i < resultsToken.length; i++) {
                                     tokenList.push(resultsToken[i].token)
-                                    // console.log(`tes token ${resultsToken[i].token}`)
                                 }
-                                // console.log(tokenList)
                                 const notif = {
                                     tokens: tokenList,
                                     notification: {
@@ -46,7 +44,6 @@ async function getMemoryAlert() {
                                             tag: "memUsage"
                                         }
                                     },
-                                    // topic: "all"
                                 }
                                 storeNotif(
                                     "[Warning] Server high memory usage",
@@ -55,24 +52,6 @@ async function getMemoryAlert() {
                                 admin.messaging().sendEachForMulticast(notif)
                             }
                         )
-                        // const notif = {
-                        //     notification: {
-                        //         title: "[Warning] Server high memory usage",
-                        //         body: `Memory usage is at ${memUsage}%`,
-                        //     },
-                        //     android: {
-                        //         notification: {
-                        //             channelId: "101",
-                        //             tag: "memUsage"
-                        //         }
-                        //     },
-                        //     topic: "all"
-                        // }
-                        // storeNotif(
-                        //     "[Warning] Server high memory usage",
-                        //     `Memory usage is at ${memUsage}%`,
-                        // )
-                        // admin.messaging().send(notif)
                     }
                     else if(memUsage > 70.0) {
                         conn.query(
@@ -81,9 +60,7 @@ async function getMemoryAlert() {
                                 if (errorToken) throw errorToken
                                 for (let i = 0; i < resultsToken.length; i++) {
                                     tokenList.push(resultsToken[i].token)
-                                    // console.log(`tes token ${resultsToken[i].token}`)
                                 }
-                                // console.log(tokenList)
                                 const notif = {
                                     tokens: tokenList,
                                     notification: {
@@ -96,7 +73,6 @@ async function getMemoryAlert() {
                                             tag: "memUsage"
                                         }
                                     },
-                                    // topic: "all"
                                 }
                                 storeNotif(
                                     "[Critical] Server high memory usage",
@@ -105,24 +81,6 @@ async function getMemoryAlert() {
                                 admin.messaging().sendEachForMulticast(notif)
                             }
                         )
-                        // const notif = {
-                        //     notification: {
-                        //         title: "[Critical] Server high memory usage",
-                        //         body: `Memory usage is at ${memUsage}%`,
-                        //     },
-                        //     android: {
-                        //         notification: {
-                        //             channelId: "101",
-                        //             tag: "memUsage"
-                        //         }
-                        //     },
-                        //     topic: "all"
-                        // }
-                        // storeNotif(
-                        //     "[Critical] Server high memory usage",
-                        //     `Memory usage is at ${memUsage}%`,
-                        // )
-                        // admin.messaging().send(notif)
                     }
                 }
             )
@@ -151,9 +109,7 @@ async function getDiskAlert() {
                     if (errorToken) throw errorToken
                     for (let i = 0; i < resultsToken.length; i++) {
                         tokenList.push(resultsToken[i].token)
-                        // console.log(`tes token ${resultsToken[i].token}`)
                     }
-                    // console.log(tokenList)
                     const notif = {
                         tokens: tokenList,
                         notification: {
@@ -162,11 +118,10 @@ async function getDiskAlert() {
                         },
                         android: {
                             notification: {
-                                channelId: "101",
-                                tag: "memUsage"
+                                channelId: "102",
+                                tag: "diskUsage"
                             }
                         },
-                        // topic: "all"
                     }
                     storeNotif(
                         "[Warning] Server high disk usage",
@@ -175,24 +130,6 @@ async function getDiskAlert() {
                     admin.messaging().sendEachForMulticast(notif)
                 }
             )
-            // const notif = {
-            //     notification: {
-            //         title: "[Warning] Server high disk usage",
-            //         body: `Disk usage is at ${usageValue}%`,
-            //     },
-            //     android: {
-            //         notification: {
-            //             channelId: "102",
-            //             tag: "diskUsage"
-            //         }
-            //     },
-            //     topic: "all"
-            // }
-            // storeNotif(
-            //     "[Warning] Server high disk usage",
-            //     `Disk usage is at ${usageValue}%`,
-            // )
-            // admin.messaging().send(notif)
         } else if (usageValue > 70.0) {
             conn.query(
                 "SELECT * FROM device_tokens;",
@@ -200,9 +137,7 @@ async function getDiskAlert() {
                     if (errorToken) throw errorToken
                     for (let i = 0; i < resultsToken.length; i++) {
                         tokenList.push(resultsToken[i].token)
-                        // console.log(`tes token ${resultsToken[i].token}`)
                     }
-                    // console.log(tokenList)
                     const notif = {
                         tokens: tokenList,
                         notification: {
@@ -211,11 +146,10 @@ async function getDiskAlert() {
                         },
                         android: {
                             notification: {
-                                channelId: "101",
-                                tag: "memUsage"
+                                channelId: "102",
+                                tag: "diskUsage"
                             }
                         },
-                        // topic: "all"
                     }
                     storeNotif(
                         "[Citical] Server high disk usage",
@@ -224,24 +158,6 @@ async function getDiskAlert() {
                     admin.messaging().sendEachForMulticast(notif)
                 }
             )
-            // const notif = {
-            //     notification: {
-            //         title: "[Citical] Server high disk usage",
-            //         body: `Disk usage is at ${usageValue}%`,
-            //     },
-            //     android: {
-            //         notification: {
-            //             channelId: "102",
-            //             tag: "diskUsage"
-            //         }
-            //     },
-            //     topic: "all"
-            // }
-            // storeNotif(
-            //     "[Citical] Server high disk usage",
-            //     `Disk usage is at ${usageValue}%`,
-            // )
-            // admin.messaging().send(notif)
         }
     } catch (error) {
         console.log(`Disk alert error: ${error.message}`)
@@ -265,9 +181,7 @@ async function getCpuAlert() {
                                 if (errorToken) throw errorToken
                                 for (let i = 0; i < resultsToken.length; i++) {
                                     tokenList.push(resultsToken[i].token)
-                                    // console.log(`tes token ${resultsToken[i].token}`)
                                 }
-                                // console.log(tokenList)
                                 const notif = {
                                     tokens: tokenList,
                                     notification: {
@@ -276,11 +190,10 @@ async function getCpuAlert() {
                                     },
                                     android: {
                                         notification: {
-                                            channelId: "101",
-                                            tag: "memUsage"
+                                            channelId: "103",
+                                            tag: "cpuUsage"
                                         }
                                     },
-                                    // topic: "all"
                                 }
                                 storeNotif(
                                     "[Warning] Server high CPU usage",
@@ -289,24 +202,6 @@ async function getCpuAlert() {
                                 admin.messaging().sendEachForMulticast(notif)
                             }
                         )
-                        // const notif = {
-                        //     notification: {
-                        //         title: "[Warning] Server high CPU usage",
-                        //         body: `CPU usage is at ${cpuUsage}%`,
-                        //     },
-                        //     android: {
-                        //         notification: {
-                        //             channelId: "103",
-                        //             tag: "cpuUsage"
-                        //         }
-                        //     },
-                        //     topic: "all"
-                        // }
-                        // storeNotif(
-                        //     "[Warning] Server high CPU usage",
-                        //     `CPU usage is at ${cpuUsage}%`,
-                        // )
-                        // admin.messaging().send(notif)
                     }
                     else if(cpuUsage > 70.0) {
                         conn.query(
@@ -315,9 +210,7 @@ async function getCpuAlert() {
                                 if (errorToken) throw errorToken
                                 for (let i = 0; i < resultsToken.length; i++) {
                                     tokenList.push(resultsToken[i].token)
-                                    // console.log(`tes token ${resultsToken[i].token}`)
                                 }
-                                // console.log(tokenList)
                                 const notif = {
                                     tokens: tokenList,
                                     notification: {
@@ -326,11 +219,10 @@ async function getCpuAlert() {
                                     },
                                     android: {
                                         notification: {
-                                            channelId: "101",
-                                            tag: "memUsage"
+                                            channelId: "103",
+                                            tag: "cpuUsage"
                                         }
                                     },
-                                    // topic: "all"
                                 }
                                 storeNotif(
                                     "[Critical] Server high CPU usage",
@@ -339,24 +231,6 @@ async function getCpuAlert() {
                                 admin.messaging().sendEachForMulticast(notif)
                             }
                         )
-                        // const notif = {
-                        //     notification: {
-                        //         title: "[Critical] Server high CPU usage",
-                        //         body: `CPU usage is at ${cpuUsage}%`,
-                        //     },
-                        //     android: {
-                        //         notification: {
-                        //             channelId: "103",
-                        //             tag: "cpuUsage"
-                        //         }
-                        //     },
-                        //     topic: "all"
-                        // }
-                        // storeNotif(
-                        //     "[Critical] Server high CPU usage",
-                        //     `CPU usage is at ${cpuUsage}%`, 
-                        // )
-                        // admin.messaging().send(notif)
                     }
                 }
             )
@@ -400,9 +274,7 @@ async function getServiceAlert(type) {
                     if (errorToken) throw errorToken
                     for (let i = 0; i < resultsToken.length; i++) {
                         tokenList.push(resultsToken[i].token)
-                        // console.log(`tes token ${resultsToken[i].token}`)
                     }
-                    // console.log(tokenList)
                     const notif = {
                         tokens: tokenList,
                         notification: {
@@ -411,11 +283,10 @@ async function getServiceAlert(type) {
                         },
                         android: {
                             notification: {
-                                channelId: "101",
-                                tag: "memUsage"
+                                channelId: "104",
+                                tag: "serviceStatus"
                             }
                         },
-                        // topic: "all"
                     }
                     storeNotif(
                         `[Critical] ${finalObj.length} server instances down`,
@@ -425,24 +296,6 @@ async function getServiceAlert(type) {
                 }
             )
             conn.release()
-            // const notif = {
-            //     notification: {
-            //         title: `[Critical] ${finalObj.length} server instances down`,
-            //         body: `You may need to check the instance on the server`,
-            //     },
-            //     android: {
-            //         notification: {
-            //             channelId: "104",
-            //             tag: "instanceDown"
-            //         }
-            //     },
-            //     topic: "all"
-            // }
-            // storeNotif(
-            //     `[Critical] ${finalObj.length} server instances down`,
-            //     `You may need to check the instance on the server`,
-            // )
-            // admin.messaging().send(notif)
         }
     } catch (error) {
         // for prod
@@ -455,9 +308,7 @@ async function getServiceAlert(type) {
                     if (errorToken) throw errorToken
                     for (let i = 0; i < resultsToken.length; i++) {
                         tokenList.push(resultsToken[i].token)
-                        // console.log(`tes token ${resultsToken[i].token}`)
                     }
-                    // console.log(tokenList)
                     const notif = {
                         tokens: tokenList,
                         notification: {
@@ -466,11 +317,10 @@ async function getServiceAlert(type) {
                         },
                         android: {
                             notification: {
-                                channelId: "101",
-                                tag: "memUsage"
+                                channelId: "104",
+                                tag: "prometheusDown"
                             }
                         },
-                        // topic: "all"
                     }
                     storeNotif(
                         `[Critical] Error connecting to Prometheus`,
@@ -480,24 +330,6 @@ async function getServiceAlert(type) {
                 }
             )
             conn.release()
-            // const notif = {
-            //     notification: {
-            //         title: `[Critical] Error connecting to Prometheus`,
-            //         body: `Server can't connect to the Prometheus`,
-            //     },
-            //     android: {
-            //         notification: {
-            //             channelId: "104",
-            //             tag: "prometheusDown"
-            //         }
-            //     },
-            //     topic: "all"
-            // }
-            // storeNotif(
-            //     `[Critical] Error connecting to Prometheus`,
-            //     `Server can't connect to the Prometheus`,
-            // )
-            // admin.messaging().send(notif)
         }
     }
 }
