@@ -24,7 +24,6 @@ async function storeCpuUtils(interval) {
                 objValues.time = unixTime.toLocaleTimeString('en-GB')
             })
             const cpuValues = Object.values(objValues)
-            console.log(cpuValues[2])
             let cpuData = {
                 value: cpuValues[0],
                 date: cpuValues[1],
@@ -120,11 +119,11 @@ async function storeMemUtils(interval) {
             objValues.value = 0.0
             objValues.date = unixTime.toLocaleDateString('en-GB')
             objValues.time = unixTime.toLocaleTimeString('en-GB')
-            const cpuValues = Object.values(objValues)
+            const memValues = Object.values(objValues)
             let emptyData = {
-                value: cpuValues[0].toFixed(1),
-                date: cpuValues[1],
-                time: cpuValues[2]
+                value: memValues[0].toFixed(1),
+                date: memValues[1],
+                time: memValues[2]
             }
             pool.getConnection(function (err, conn) {
                 if (err) throw err
@@ -138,11 +137,11 @@ async function storeMemUtils(interval) {
         objValues.value = 0.0
         objValues.date = unixTime.toLocaleDateString('en-GB')
         objValues.time = unixTime.toLocaleTimeString('en-GB')
-        const cpuValues = Object.values(objValues)
+        const memValues = Object.values(objValues)
         let emptyData = {
-            value: cpuValues[0].toFixed(1),
-            date: cpuValues[1],
-            time: cpuValues[2]
+            value: memValues[0].toFixed(1),
+            date: memValues[1],
+            time: memValues[2]
         }
         pool.getConnection(function (err, conn) {
             if (err) throw err
@@ -169,8 +168,8 @@ async function storeNetLatency(interval) {
             const latencyValues = Object.values(objValues)
             let latencyData = {
                 value: latencyValues[0],
-                date: cpuValues[1],
-                time: cpuValues[2]
+                date: latencyValues[1],
+                time: latencyValues[2]
             }
             pool.getConnection(function (err, conn) {
                 if (err) throw err
@@ -185,8 +184,8 @@ async function storeNetLatency(interval) {
             const latencyValues = Object.values(objValues)
             let emptyData = {
                 value: latencyValues[0].toFixed(1),
-                date: cpuValues[1],
-                time: cpuValues[2]
+                date: latencyValues[1],
+                time: latencyValues[2]
             }
             pool.getConnection(function (err, conn) {
                 if (err) throw err
@@ -203,8 +202,8 @@ async function storeNetLatency(interval) {
         const latencyValues = Object.values(objValues)
         let emptyData = {
             value: latencyValues[0].toFixed(1),
-            date: cpuValues[1],
-            time: cpuValues[2]
+            date: latencyValues[1],
+            time: latencyValues[2]
         }
         pool.getConnection(function (err, conn) {
             if (err) throw err
