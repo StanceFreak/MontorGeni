@@ -16,6 +16,7 @@ pool.on("error", (err) => {
 
 async function getMemoryAlert() {
     try {
+        const startTime = performance.now()
         let tokenList = []
         pool.getConnection(function (err, conn) {
             if (err) throw err
@@ -24,7 +25,7 @@ async function getMemoryAlert() {
                 function (error, results) {
                     if (error) throw error
                     const memUsage = results[0].value
-                    if (memUsage >= 50.0 && memUsage <= 70.0) {
+                    if (memUsage >= 10.0 && memUsage <= 70.0) {
                         conn.query(
                             "SELECT * FROM device_tokens;",
                             function (errorToken, resultsToken) {
@@ -50,6 +51,9 @@ async function getMemoryAlert() {
                                     `Memory usage is at ${memUsage}%`,
                                 )
                                 admin.messaging().sendEachForMulticast(notif)
+                                const endTime = performance.now()
+                                const execTime = endTime - startTime
+                                console.log(`notif delay time: ${execTime.toFixed(1)}ms`)
                             }
                         )
                     }
