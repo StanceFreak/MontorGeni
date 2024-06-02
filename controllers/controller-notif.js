@@ -34,8 +34,7 @@ async function registerDevice(req, res, next) {
                                         throw errorChild
                                     }                              
                                 }
-                            ),
-                            conn.release()
+                            )
                         }
                         else {
                             res.status(200).json(
@@ -47,6 +46,7 @@ async function registerDevice(req, res, next) {
                         }
                     }
                 )
+                conn.release()
             })
         }
         else {
