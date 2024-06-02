@@ -248,7 +248,84 @@ async function getCpuAlert() {
     }
 }
 
-async function getServiceAlert(type) {
+async function getLatencyAlert() {
+    try {
+        let tokenList = []
+        pool.getConnection(function (err, conn) {
+            if (err) throw err
+            conn.query(
+                'select * from net_latency order by id desc limit 1;',
+                function (error, results) {
+                    if (error) throw error
+                    const latency = results[0].value
+                    if (latency >= 100.0 && latency <= 200.0) {
+                        conn.query(
+                            "SELECT * FROM device_tokens;",
+                            function (errorToken, resultsToken) {
+                                if (errorToken) throw errorToken
+                                for (let i = 0; i < resultsToken.length; i++) {
+                                    tokenList.push(resultsToken[i].token)
+                                }
+                                const notif = {
+                                    tokens: tokenList,
+                                    notification: {
+                                        title: "[Warning] Server high network latency",
+                                        body: `Network latency is at ${latency}%`,
+                                    },
+                                    android: {
+                                        notification: {
+                                            channelId: "105",
+                                            tag: "netLatency"
+                                        }
+                                    },
+                                }
+                                storeNotif(
+                                    "[Warning] Server high network latency",
+                                    `Network latency is at ${latency}%`
+                                )
+                                admin.messaging().sendEachForMulticast(notif)
+                            }
+                        )
+                    }
+                    else if(latency > 200.0) {
+                        conn.query(
+                            "SELECT * FROM device_tokens;",
+                            function (errorToken, resultsToken) {
+                                if (errorToken) throw errorToken
+                                for (let i = 0; i < resultsToken.length; i++) {
+                                    tokenList.push(resultsToken[i].token)
+                                }
+                                const notif = {
+                                    tokens: tokenList,
+                                    notification: {
+                                        title: "[Critical] Server high network latency",
+                                        body: `Network latency is at ${latency}%`,
+                                    },
+                                    android: {
+                                        notification: {
+                                            channelId: "105",
+                                            tag: "netLatency"
+                                        }
+                                    },
+                                }
+                                storeNotif(
+                                    "[Critical] Server high network latency",
+                                    `Network latency is at ${latency}%`
+                                )
+                                admin.messaging().sendEachForMulticast(notif)
+                            }
+                        )
+                    }
+                }
+            )
+            conn.release()
+        })
+    } catch (error) {
+        console.log(`Network latency alert error: ${error.message}`)
+    }
+}
+
+async function getServiceAlert() {
     const url = `${ROOT_URL}/query`
     try {
         let tokenList = []
@@ -366,5 +443,6 @@ module.exports = {
     getMemoryAlert,
     getDiskAlert,
     getCpuAlert,
+    getLatencyAlert,
     getServiceAlert
 }

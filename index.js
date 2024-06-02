@@ -39,7 +39,8 @@ schedule.scheduleJob(`* * * * 0-6`, async () => {
     await scrapers.storeCpuUtils(1)
     await scraperNotif.getCpuAlert(),
     await scraperNotif.getMemoryAlert(),
-    await scraperNotif.getServiceAlert()
+    await scraperNotif.getServiceAlert(),
+    await scraperNotif.getLatencyAlert()
 })
 
 schedule.scheduleJob(`*/30 * * * 0-6`, async () => {
