@@ -20,12 +20,15 @@ async function storeCpuUtils(interval) {
             cpuUtil.data.data.result.map((data) => {
                 const unixTime = new Date(data.value[0] * 1000)
                 objValues.value = data.value[1]
+                objValues.date = unixTime.toLocaleDateString('en-GB')
                 objValues.time = unixTime.toLocaleTimeString('en-GB')
             })
             const cpuValues = Object.values(objValues)
+            console.log(cpuValues[2])
             let cpuData = {
                 value: cpuValues[0],
-                time: cpuValues[1]
+                date: cpuValues[1],
+                time: cpuValues[2]
             }
             pool.getConnection(function (err, conn) {
                 if (err) throw err
@@ -35,11 +38,13 @@ async function storeCpuUtils(interval) {
         } else {
             const unixTime = new Date()
             objValues.value = 0.0
+            objValues.date = unixTime.toLocaleDateString('en-GB')
             objValues.time = unixTime.toLocaleTimeString('en-GB')
             const cpuValues = Object.values(objValues)
             let emptyData = {
                 value: cpuValues[0].toFixed(1),
-                time: cpuValues[1]
+                date: cpuValues[1],
+                time: cpuValues[2]
             }
             pool.getConnection(function (err, conn) {
                 if (err) throw err
@@ -51,11 +56,13 @@ async function storeCpuUtils(interval) {
         const objValues = {}
         const unixTime = new Date()
         objValues.value = 0.0
+        objValues.date = unixTime.toLocaleDateString('en-GB')
         objValues.time = unixTime.toLocaleTimeString('en-GB')
         const cpuValues = Object.values(objValues)
         let emptyData = {
             value: cpuValues[0].toFixed(1),
-            time: cpuValues[1]
+            date: cpuValues[1],
+            time: cpuValues[2]
         }
         pool.getConnection(function (err, conn) {
             if (err) throw err
@@ -93,13 +100,15 @@ async function storeMemUtils(interval) {
                 const calc = parseInt(data.value[1])  
                 const unixTime = new Date(data.value[0] * 1000)
                 objValues.memBuffers = calc
-                objValues.date = unixTime.toLocaleTimeString('en-GB')
+                objValues.date = unixTime.toLocaleDateString('en-GB')
+                objValues.time = unixTime.toLocaleTimeString('en-GB')
             })
             const memValues = Object.values(objValues)
             const avgServerMemory = 100 * (1- ((memValues[1] + memValues[2] + memValues[3]) / memValues[0]))
             let memData = {
                 value: avgServerMemory.toFixed(1),
-                time: memValues[4]
+                date: memValues[4],
+                time: memValues[5]
             }
             pool.getConnection(function (err, conn) {
                 if (err) throw err
@@ -109,11 +118,13 @@ async function storeMemUtils(interval) {
         } else {
             const unixTime = new Date()
             objValues.value = 0.0
+            objValues.date = unixTime.toLocaleDateString('en-GB')
             objValues.time = unixTime.toLocaleTimeString('en-GB')
             const cpuValues = Object.values(objValues)
             let emptyData = {
-                value: cpuValues[0],
-                time: cpuValues[1]
+                value: cpuValues[0].toFixed(1),
+                date: cpuValues[1],
+                time: cpuValues[2]
             }
             pool.getConnection(function (err, conn) {
                 if (err) throw err
@@ -125,11 +136,13 @@ async function storeMemUtils(interval) {
         const objValues = {}
         const unixTime = new Date()
         objValues.value = 0.0
+        objValues.date = unixTime.toLocaleDateString('en-GB')
         objValues.time = unixTime.toLocaleTimeString('en-GB')
         const cpuValues = Object.values(objValues)
         let emptyData = {
-            value: cpuValues[0],
-            time: cpuValues[1]
+            value: cpuValues[0].toFixed(1),
+            date: cpuValues[1],
+            time: cpuValues[2]
         }
         pool.getConnection(function (err, conn) {
             if (err) throw err
@@ -150,12 +163,14 @@ async function storeNetLatency(interval) {
                 const latency = parseFloat(data.value[1]).toFixed(1)
                 const unixTime = new Date(data.value[0] * 1000)
                 objValues.value = latency
-                objValues.date = unixTime.toLocaleTimeString('en-GB')
+                objValues.date = unixTime.toLocaleDateString('en-GB')
+                objValues.time = unixTime.toLocaleTimeString('en-GB')
             })
             const latencyValues = Object.values(objValues)
             let latencyData = {
                 value: latencyValues[0],
-                time: latencyValues[1]
+                date: cpuValues[1],
+                time: cpuValues[2]
             }
             pool.getConnection(function (err, conn) {
                 if (err) throw err
@@ -165,11 +180,13 @@ async function storeNetLatency(interval) {
         } else {
             const unixTime = new Date()
             objValues.value = 0.0
+            objValues.date = unixTime.toLocaleDateString('en-GB')
             objValues.time = unixTime.toLocaleTimeString('en-GB')
             const latencyValues = Object.values(objValues)
             let emptyData = {
                 value: latencyValues[0].toFixed(1),
-                time: latencyValues[1]
+                date: cpuValues[1],
+                time: cpuValues[2]
             }
             pool.getConnection(function (err, conn) {
                 if (err) throw err
@@ -181,11 +198,13 @@ async function storeNetLatency(interval) {
         const objValues = {}
         const unixTime = new Date()
         objValues.value = 0.0
+        objValues.date = unixTime.toLocaleDateString('en-GB')
         objValues.time = unixTime.toLocaleTimeString('en-GB')
         const latencyValues = Object.values(objValues)
         let emptyData = {
             value: latencyValues[0].toFixed(1),
-            time: latencyValues[1]
+            date: cpuValues[1],
+            time: cpuValues[2]
         }
         pool.getConnection(function (err, conn) {
             if (err) throw err
