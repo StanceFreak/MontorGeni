@@ -16,7 +16,6 @@ pool.on("error", (err) => {
 
 async function getMemoryAlert() {
     try {
-        const startTime = performance.now()
         let tokenList = []
         pool.getConnection(function (err, conn) {
             if (err) throw err
@@ -51,9 +50,6 @@ async function getMemoryAlert() {
                                     `Memory usage is at ${memUsage}%`,
                                 )
                                 admin.messaging().sendEachForMulticast(notif)
-                                const endTime = performance.now()
-                                const execTime = endTime - startTime
-                                console.log(`notif delay time: ${execTime.toFixed(1)}ms`)
                             }
                         )
                     }
@@ -107,61 +103,68 @@ async function getDiskAlert() {
         const diskValues = Object.values(objValues)
         const usageValue = diskValues[0]
         if (usageValue >= 50.0 && usageValue <= 70.0) {
-            conn.query(
-                "SELECT * FROM device_tokens;",
-                function (errorToken, resultsToken) {
-                    if (errorToken) throw errorToken
-                    for (let i = 0; i < resultsToken.length; i++) {
-                        tokenList.push(resultsToken[i].token)
-                    }
-                    const notif = {
-                        tokens: tokenList,
-                        notification: {
-                            title: "[Warning] Server high disk usage",
-                            body: `Disk usage is at ${usageValue}%`,
-                        },
-                        android: {
+            pool.getConnection(function (err, conn) {
+                if (err) throw err
+                conn.query(
+                    "SELECT * FROM device_tokens;",
+                    function (errorToken, resultsToken) {
+                        if (errorToken) throw errorToken
+                        for (let i = 0; i < resultsToken.length; i++) {
+                            tokenList.push(resultsToken[i].token)
+                        }
+                        const notif = {
+                            tokens: tokenList,
                             notification: {
-                                channelId: "102",
-                                tag: "diskUsage"
-                            }
-                        },
+                                title: "[Warning] Server high disk usage",
+                                body: `Disk usage is at ${usageValue}%`,
+                            },
+                            android: {
+                                notification: {
+                                    channelId: "102",
+                                    tag: "diskUsage"
+                                }
+                            },
+                        }
+                        storeNotif(
+                            "[Warning] Server high disk usage",
+                            `Disk usage is at ${usageValue}%`,
+                        )
+                        admin.messaging().sendEachForMulticast(notif)
                     }
-                    storeNotif(
-                        "[Warning] Server high disk usage",
-                        `Disk usage is at ${usageValue}%`,
-                    )
-                    admin.messaging().sendEachForMulticast(notif)
-                }
-            )
+                )
+                conn.release()
+            })
         } else if (usageValue > 70.0) {
-            conn.query(
-                "SELECT * FROM device_tokens;",
-                function (errorToken, resultsToken) {
-                    if (errorToken) throw errorToken
-                    for (let i = 0; i < resultsToken.length; i++) {
-                        tokenList.push(resultsToken[i].token)
-                    }
-                    const notif = {
-                        tokens: tokenList,
-                        notification: {
-                            title: "[Citical] Server high disk usage",
-                            body: `Disk usage is at ${usageValue}%`,
-                        },
-                        android: {
+            pool.getConnection(function (err, conn) {
+                conn.query(
+                    "SELECT * FROM device_tokens;",
+                    function (errorToken, resultsToken) {
+                        if (errorToken) throw errorToken
+                        for (let i = 0; i < resultsToken.length; i++) {
+                            tokenList.push(resultsToken[i].token)
+                        }
+                        const notif = {
+                            tokens: tokenList,
                             notification: {
-                                channelId: "102",
-                                tag: "diskUsage"
-                            }
-                        },
+                                title: "[Citical] Server high disk usage",
+                                body: `Disk usage is at ${usageValue}%`,
+                            },
+                            android: {
+                                notification: {
+                                    channelId: "102",
+                                    tag: "diskUsage"
+                                }
+                            },
+                        }
+                        storeNotif(
+                            "[Citical] Server high disk usage",
+                            `Disk usage is at ${usageValue}%`,
+                        )
+                        admin.messaging().sendEachForMulticast(notif)
                     }
-                    storeNotif(
-                        "[Citical] Server high disk usage",
-                        `Disk usage is at ${usageValue}%`,
-                    )
-                    admin.messaging().sendEachForMulticast(notif)
-                }
-            )
+                )
+                conn.release()
+            })
         }
     } catch (error) {
         console.log(`Disk alert error: ${error.message}`)
