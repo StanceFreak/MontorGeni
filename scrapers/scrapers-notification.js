@@ -24,7 +24,7 @@ async function getMemoryAlert() {
                 function (error, results) {
                     if (error) throw error
                     const memUsage = results[0].value
-                    if (memUsage >= 10.0 && memUsage <= 70.0) {
+                    if (memUsage >= 50.0 && memUsage <= 70.0) {
                         conn.query(
                             "SELECT * FROM device_tokens;",
                             function (errorToken, resultsToken) {
