@@ -6,7 +6,6 @@ const csvWriter = require('csv-writer')
 const dateFormat = require('date-and-time')
 const pool = mysql.createPool(db)
 const fs = require('fs')
-const { default: id } = require('date-and-time/locale/id')
 
 pool.on("error", (err) => {
     console.error(err)
@@ -91,8 +90,6 @@ async function downloadCpuRecords(req, res, next) {
                     if (error) throw error
                     const date = new Date()
                     const currentTime = dateFormat.format(date, "DDMMYYYY_HHmm")
-                    // const currentDate = dateFormat.format(date.toLocaleTimeString('en-GB'), "DDMMYYYY")
-                    // const currentTime = dateFormat.format(date.toLocaleDateString('en-GB'), "HHmm")
                     const filePath = `./file/CPU_RECORD_${currentTime}.csv`
                     const csvCreate = csvWriter.createObjectCsvWriter({
                         path: filePath,
@@ -107,34 +104,34 @@ async function downloadCpuRecords(req, res, next) {
                     try {
                         if (fs.existsSync("./file")) {
                             csvCreate.writeRecords(results)
-                        .then(() => {
-                            return res.status(200).json(
-                                {
-                                    status: 200,
-                                    message: "success",
-                                    // testing
-                                    // data: `http://localhost:80/file/CPU_RECORD_${currentTime}.csv`
-                                    // prod
-                                    data: `146.190.99.85/records/CPU_RECORD_${currentTime}.csv`
-                                }
-                            )
-                        })
+                            .then(() => {
+                                return res.status(200).json(
+                                    {
+                                        status: 200,
+                                        message: "success",
+                                        // testing
+                                        data: `http://localhost:3100/records/CPU_RECORD_${currentTime}.csv`
+                                        // prod
+                                        // data: `http://146.190.99.85:3100/records/CPU_RECORD_${currentTime}.csv`
+                                    }
+                                )
+                            })
                         }
                         else {
                             fs.mkdirSync("./file/", true)
                             csvCreate.writeRecords(results)
-                        .then(() => {
-                            return res.status(200).json(
-                                {
-                                    status: 200,
-                                    message: "success",
-                                    // testing
-                                    // data: `http://localhost:80/file/CPU_RECORD_${currentTime}.csv`
-                                    // prod
-                                    data: `146.190.99.85/records/CPU_RECORD_${currentTime}.csv`
-                                }
-                            )
-                        })
+                            .then(() => {
+                                return res.status(200).json(
+                                    {
+                                        status: 200,
+                                        message: "success",
+                                        // testing
+                                        data: `http://localhost:3100/records/CPU_RECORD_${currentTime}.csv`
+                                        // prod
+                                        // data: `http://146.190.99.85:3100/records/CPU_RECORD_${currentTime}.csv`
+                                    }
+                                )
+                            })
                         }
                     } catch (error) {
                         next(res.status(400).json({
