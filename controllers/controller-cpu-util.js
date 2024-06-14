@@ -105,6 +105,7 @@ async function downloadCpuRecords(req, res, next) {
                         ]
                     })
                     try {
+                        fs.mkdirSync("./file/", true)
                         csvCreate.writeRecords(results)
                         .then(() => {
                             return res.status(200).json(
@@ -112,9 +113,9 @@ async function downloadCpuRecords(req, res, next) {
                                     status: 200,
                                     message: "success",
                                     // testing
-                                    // data: `http://localhost:80/file/CPU_RECORD_${currentTime}.csv`
+                                    data: `http://localhost:80/file/CPU_RECORD_${currentTime}.csv`
                                     // prod
-                                    data: `146.190.99.85/records/CPU_RECORD_${currentTime}.csv`
+                                    // data: `146.190.99.85/records/CPU_RECORD_${currentTime}.csv`
                                 }
                             )
                         })
