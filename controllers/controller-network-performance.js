@@ -106,9 +106,9 @@ async function downloadLatencyRecords(req, res, next) {
                                         status: 200,
                                         message: "success",
                                         // testing
-                                        data: `http://localhost:3100/records/LAT_RECORD_${currentTime}.csv`
+                                        // data: `http://localhost:3100/records/LAT_RECORD_${currentTime}.csv`
                                         // prod
-                                        // data: `http://146.190.99.85:3100/records/LAT_RECORD_${currentTime}.csv`
+                                        data: `http://146.190.99.85:3100/records/LAT_RECORD_${currentTime}.csv`
                                     }
                                 )
                             })
@@ -122,9 +122,9 @@ async function downloadLatencyRecords(req, res, next) {
                                         status: 200,
                                         message: "success",
                                         // testing
-                                        data: `http://localhost:3100/records/LAT_RECORD_${currentTime}.csv`
+                                        // data: `http://localhost:3100/records/LAT_RECORD_${currentTime}.csv`
                                         // prod
-                                        // data: `http://146.190.99.85:3100/records/LAT_RECORD_${currentTime}.csv`
+                                        data: `http://146.190.99.85:3100/records/LAT_RECORD_${currentTime}.csv`
                                     }
                                 )
                             })
