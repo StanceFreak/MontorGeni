@@ -1,6 +1,6 @@
 const {getServerStatus, postServerStatus, getServerUptime} = require("./controller-status")
 const {getServerAvgMemory, getServerMemUtilRecord} = require("./controller-memory")
-const {getServerCpuUtilRecord, getServerCpuUtil} = require("./controller-cpu-util")
+const {getServerCpuUtilRecord, getServerCpuUtil, downloadCpuRecords} = require("./controller-cpu-util")
 const {getServerNetworkIo, getServerNetworkRt} = require("./controller-network-io")
 const {getServerDiskUtil, getServerDiskRw, getServerDiskUsage} = require("./controller-disk-rw")
 const {getNetworkPacketLoss, getNetworkLatencyRecord} = require("./controller-network-performance")
@@ -22,5 +22,6 @@ module.exports = {
     getNetworkPacketLoss,
     getNetworkLatencyRecord,
     getNotifRecord,
-    registerDevice
+    registerDevice,
+    downloadCpuRecords
 }
