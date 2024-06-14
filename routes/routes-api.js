@@ -36,7 +36,11 @@ function routesApi() {
 
     router.get("/server/network/performance/packet-loss", controller.getNetworkPacketLoss)
 
-    router.get("/server/net-latency/download/record?:interval", controller.downloadCpuRecords)
+    router.get("/server/cpu-util/download/record?:interval", controller.downloadCpuRecords)
+
+    router.get("/server/mem-util/download/record?:interval", controller.downloadMemoryRecords)
+
+    router.get("/server/net-latency/download/record?:interval", controller.downloadLatencyRecords)
 
     return router
 }
