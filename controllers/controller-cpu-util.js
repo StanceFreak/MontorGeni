@@ -105,8 +105,8 @@ async function downloadCpuRecords(req, res, next) {
                         ]
                     })
                     try {
-                        fs.mkdirSync("./file/", true)
-                        csvCreate.writeRecords(results)
+                        if (fs.existsSync("./file")) {
+                            csvCreate.writeRecords(results)
                         .then(() => {
                             return res.status(200).json(
                                 {
@@ -119,6 +119,23 @@ async function downloadCpuRecords(req, res, next) {
                                 }
                             )
                         })
+                        }
+                        else {
+                            fs.mkdirSync("./file/", true)
+                            csvCreate.writeRecords(results)
+                        .then(() => {
+                            return res.status(200).json(
+                                {
+                                    status: 200,
+                                    message: "success",
+                                    // testing
+                                    // data: `http://localhost:80/file/CPU_RECORD_${currentTime}.csv`
+                                    // prod
+                                    data: `146.190.99.85/records/CPU_RECORD_${currentTime}.csv`
+                                }
+                            )
+                        })
+                        }
                     } catch (error) {
                         next(res.status(400).json({
                             status: 400,
