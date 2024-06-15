@@ -137,8 +137,7 @@ async function downloadCpuRecords(req, res, next) {
                     } catch (error) {
                         next(res.status(400).json({
                             status: 400,
-                            message: "failed to download the file",
-                            error: error.message
+                            message: error.message
                         }))
                     }
                 }
