@@ -90,11 +90,11 @@ async function downloadLatencyRecords(req, res, next) {
                     const csvCreate = csvWriter.createObjectCsvWriter({
                         path: filePath,
                         header: [
-                            {id: "id", name: "Id"}, 
-                            {id: "value", name: "Value"}, 
-                            {id: "time", name: "Time"}, 
-                            {id: "created_at", name: "Created At"}, 
-                            {id: "date", name: "Date"}
+                            {id: "id", title: "Id"}, 
+                            {id: "value", title: "Value"}, 
+                            {id: "time", title: "Time"}, 
+                            {id: "date", title: "Date"},
+                            {id: "created_at", title: "Created At"}, 
                         ]
                     })
                     try {
