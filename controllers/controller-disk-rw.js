@@ -5,11 +5,14 @@ async function getServerDiskUsage(req, res, next) {
     try {
         const url = `${ROOT_URL}/query`
         const objValues = {}
+        const diskAvailPercentage = await axios.get(url, {params: {query: 'round(100 - ((node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"}))'}})
         const diskAvailSpace = await axios.get(url, {params: {query: 'node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100'}})
         const diskTotalSpace = await axios.get(url, {params: {query: 'node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"}'}})
-
+        diskAvailPercentage.data.data.result.map((data) => {
+            objValues.diskAvailablePercentage = data.value[1]
+        })
         diskAvailSpace.data.data.result.map((data) => {
-            objValues.diskAvailable = data.value[1]
+            objValues.diskAvailableSize = data.value[1]
         })
         diskTotalSpace.data.data.result.map((data) => {
             const unixTime = new Date(data.value[0] * 1000)
@@ -17,16 +20,15 @@ async function getServerDiskUsage(req, res, next) {
             objValues.date = unixTime.toLocaleTimeString('en-GB')
         })
         const diskValues = Object.values(objValues)
-        const diskUsagePercentage = 100 - (diskValues[0] / diskValues[1])
         return res.status(200).json(
             {
                 status: 200,
                 message: "success",
                 data: {
-                    usagePercentage: parseInt(diskUsagePercentage.toFixed(2)),
-                    usageSizeByte: parseInt(diskValues[0] / 100),
-                    diskSizeTotal: parseInt(diskValues[1]),
-                    time: diskValues[2]
+                    usagePercentage: parseInt(diskValues[0]),
+                    usageSizeByte: parseInt(diskValues[1] / 100),
+                    diskSizeTotal: parseInt(diskValues[2]),
+                    time: diskValues[3]
                 }
             }
         )
