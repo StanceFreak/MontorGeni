@@ -328,7 +328,6 @@ async function getLatencyAlert() {
 async function getServiceAlert() {
     const url = `${ROOT_URL}/query`
     try {
-        let tokenList = []
         const tempApiResponse = []
         const apiResponse = []
         const instanceStatus = await axios.get(url, {params: {query: 'up == 0'}})
@@ -357,6 +356,7 @@ async function getServiceAlert() {
                     "SELECT * FROM device_tokens;",
                     function (errorToken, resultsToken) {
                         if (errorToken) throw errorToken
+                        let tokenList = []
                         for (let i = 0; i < resultsToken.length; i++) {
                             tokenList.push(resultsToken[i].token)
                         }
