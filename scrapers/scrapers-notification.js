@@ -352,68 +352,72 @@ async function getServiceAlert() {
         }, {})
         const finalObj = Object.values(mergeObj)
         if (finalObj.length > 0) {
-            conn.query(
-                "SELECT * FROM device_tokens;",
-                function (errorToken, resultsToken) {
-                    if (errorToken) throw errorToken
-                    for (let i = 0; i < resultsToken.length; i++) {
-                        tokenList.push(resultsToken[i].token)
-                    }
-                    const notif = {
-                        tokens: tokenList,
-                        notification: {
-                            title: `[Critical] ${finalObj.length} server instances down`,
-                            body: `You may need to check the instance on the server`,
-                        },
-                        android: {
+            pool.getConnection(function (err, conn) { 
+                conn.query(
+                    "SELECT * FROM device_tokens;",
+                    function (errorToken, resultsToken) {
+                        if (errorToken) throw errorToken
+                        for (let i = 0; i < resultsToken.length; i++) {
+                            tokenList.push(resultsToken[i].token)
+                        }
+                        const notif = {
+                            tokens: tokenList,
                             notification: {
-                                channelId: "104",
-                                tag: "serviceStatus"
-                            }
-                        },
+                                title: `[Critical] ${finalObj.length} server instances down`,
+                                body: `You may need to check the instance on the server`,
+                            },
+                            android: {
+                                notification: {
+                                    channelId: "104",
+                                    tag: "serviceStatus"
+                                }
+                            },
+                        }
+                        storeNotif(
+                            `[Critical] ${finalObj.length} server instances down`,
+                            `You may need to check the instance on the server`,
+                        )
+                        admin.messaging().sendEachForMulticast(notif)
                     }
-                    storeNotif(
-                        `[Critical] ${finalObj.length} server instances down`,
-                        `You may need to check the instance on the server`,
-                    )
-                    admin.messaging().sendEachForMulticast(notif)
-                }
-            )
-            conn.release()
+                )
+                conn.release()
+            })
         }
     } catch (error) {
         // for prod
         if (error.message == "connect ECONNREFUSED 128.199.135.220:9090") {
         // for test
         // if (error.message == "connect ECONNREFUSED 127.0.0.1:9090") {
-            conn.query(
-                "SELECT * FROM device_tokens;",
-                function (errorToken, resultsToken) {
-                    if (errorToken) throw errorToken
-                    for (let i = 0; i < resultsToken.length; i++) {
-                        tokenList.push(resultsToken[i].token)
-                    }
-                    const notif = {
-                        tokens: tokenList,
-                        notification: {
-                            title: `[Critical] Error connecting to Prometheus`,
-                            body: `Server can't connect to the Prometheus`,
-                        },
-                        android: {
+            pool.getConnection(function (err, conn) { 
+                conn.query(
+                    "SELECT * FROM device_tokens;",
+                    function (errorToken, resultsToken) {
+                        if (errorToken) throw errorToken
+                        for (let i = 0; i < resultsToken.length; i++) {
+                            tokenList.push(resultsToken[i].token)
+                        }
+                        const notif = {
+                            tokens: tokenList,
                             notification: {
-                                channelId: "104",
-                                tag: "prometheusDown"
-                            }
-                        },
+                                title: `[Critical] Error connecting to Prometheus`,
+                                body: `Server can't connect to the Prometheus`,
+                            },
+                            android: {
+                                notification: {
+                                    channelId: "104",
+                                    tag: "prometheusDown"
+                                }
+                            },
+                        }
+                        storeNotif(
+                            `[Critical] Error connecting to Prometheus`,
+                            `Server can't connect to the Prometheus`,
+                        )
+                        admin.messaging().sendEachForMulticast(notif)
                     }
-                    storeNotif(
-                        `[Critical] Error connecting to Prometheus`,
-                        `Server can't connect to the Prometheus`,
-                    )
-                    admin.messaging().sendEachForMulticast(notif)
-                }
-            )
-            conn.release()
+                )
+                conn.release()
+            })
         }
     }
 }
