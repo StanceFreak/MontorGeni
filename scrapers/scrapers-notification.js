@@ -393,6 +393,7 @@ async function getServiceAlert() {
                     "SELECT * FROM device_tokens;",
                     function (errorToken, resultsToken) {
                         if (errorToken) throw errorToken
+                        let tokenList = []
                         for (let i = 0; i < resultsToken.length; i++) {
                             tokenList.push(resultsToken[i].token)
                         }
